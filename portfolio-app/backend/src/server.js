@@ -4,8 +4,13 @@ import { env } from './config/env.js';
 import { prisma } from './config/prisma.js';
 
 const app = createApp();
-const server = app.listen(env.PORT, () => {
-  console.log(`API พร้อมใช้งานที่ http://localhost:${env.PORT}/api  [${env.NODE_ENV}]`);
+
+// ดึง Port จาก Railway อัตโนมัติเป็นอันดับแรก
+const port = process.env.PORT || env.PORT || 4000;
+
+// ระบุ '0.0.0.0' เพื่อเปิดรับการเชื่อมต่อจากภายนอก
+const server = app.listen(port, '0.0.0.0', () => {
+  console.log(`API พร้อมใช้งานที่พอร์ต ${port}  [${env.NODE_ENV}]`);
 });
 
 const shutdown = async (signal) => {
