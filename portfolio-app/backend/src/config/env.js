@@ -7,7 +7,7 @@ const schema = z.object({
   PORT: z.coerce.number().default(4000),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   JWT_SECRET: z.string().min(24, 'JWT_SECRET ต้องยาวอย่างน้อย 24 ตัวอักษร'),
-  JWT_EXPIRES_IN: z.string().default('7d'),
+  JWT_EXPIRES_IN: z.string().default('2h'), // token แอดมินอายุสั้น ถูกขโมยก็ใช้ได้ไม่นาน
   CORS_ORIGINS: z.string().default(''),
 });
 
