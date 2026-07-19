@@ -14,7 +14,7 @@ const router = Router();
 router.get('/health', async (_req, res) => {
   let database = 'ok';
   try {
-    await prisma.$queryRaw`SELECT 1`;
+    await prisma.$runCommandRaw({ ping: 1 }); // MongoDB ไม่มี $queryRaw แบบ SQL
   } catch (err) {
     database = `ต่อฐานข้อมูลไม่ได้: ${err.message.split('\n')[0]}`;
   }

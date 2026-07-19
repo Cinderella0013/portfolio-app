@@ -1,19 +1,19 @@
 // ============================================================
 //  ชั้นข้อมูล (Data layer) — โครงสร้างตารางทั้งหมดของระบบ
-//  แก้ไฟล์นี้แล้วรัน `npm run db:push` เพื่ออัปเดตฐานข้อมูล
 // ============================================================
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.1.x", "debian-openssl-3.0.x"]
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 /// บัญชีผู้ดูแล — ใช้เข้าหลังบ้านเท่านั้น ไม่เปิดให้สมัครเอง
 model User {
-  id           String   @id @default(cuid())
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
   email        String   @unique
   passwordHash String
   name         String
@@ -25,25 +25,25 @@ model User {
 
 /// ข้อมูลโปรไฟล์ มีแถวเดียวเสมอ (singleton) id ล็อกไว้ที่ "main"
 model Profile {
-  id        String   @id @default("main")
-  fullName  String
-  headline  String
-  bio       String
-  location  String?
-  email     String?
-  phone     String?
-  githubUrl String?
+  id          String   @id @default("main") @map("_id")
+  fullName    String
+  headline    String
+  bio         String
+  location    String?
+  email       String?
+  phone       String?
+  githubUrl   String?
   linkedinUrl String?
   websiteUrl  String?
   avatarUrl   String?
   resumeUrl   String?
-  updatedAt DateTime @updatedAt
+  updatedAt   DateTime @updatedAt
 
   @@map("profile")
 }
 
 model Skill {
-  id        String   @id @default(cuid())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   name      String
   category  String   @default("other") // language | framework | tool | other
   level     Int      @default(3)       // 1-5
@@ -60,7 +60,7 @@ enum ExperienceType {
 }
 
 model Experience {
-  id        String         @id @default(cuid())
+  id        String         @id @default(auto()) @map("_id") @db.ObjectId
   type      ExperienceType @default(WORK)
   title     String
   org       String
@@ -76,7 +76,7 @@ model Experience {
 }
 
 model Project {
-  id          String   @id @default(cuid())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   slug        String   @unique
   title       String
   summary     String
@@ -97,7 +97,7 @@ model Project {
 
 /// ข้อความจากฟอร์มติดต่อหน้าบ้าน
 model Message {
-  id        String   @id @default(cuid())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   name      String
   email     String
   body      String
