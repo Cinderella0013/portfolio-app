@@ -18,13 +18,17 @@ export const createApp = () => {
   app.use(express.json({ limit: '256kb' }));
   app.use(morgan(env.isProd ? 'combined' : 'dev'));
 
-  app.use(cors({
-    origin(origin, cb) {
-      // ไม่มี origin = เรียกจาก curl หรือ server ด้วยกันเอง ปล่อยผ่าน
-      if (!origin || env.corsOrigins.includes(origin)) return cb(null, true);
-      cb(new Error(`origin ${origin} ไม่ได้รับอนุญาต`));
-    },
-  }));
+  // บน Vercel หน้าบ้านกับ API อยู่โดเมนเดียวกัน ไม่ต้องเปิด CORS เลย
+  // ถ้าแยกโดเมนกัน ให้ตั้ง CORS_ORIGINS เป็นโดเมนหน้าบ้าน
+  if (env.corsOrigins.length > 0) {
+    app.use(cors({
+      origin(origin, cb) {
+        // ไม่มี origin = เรียกจาก curl หรือ server ด้วยกันเอง ปล่อยผ่าน
+        if (!origin || env.corsOrigins.includes(origin)) return cb(null, true);
+        cb(new Error(`origin ${origin} ไม่ได้รับอนุญาต`));
+      },
+    }));
+  }
 
   app.use('/api', routes);
 

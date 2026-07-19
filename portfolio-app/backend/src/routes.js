@@ -1,5 +1,6 @@
 // สารบัญ API ทั้งหมด — อยากรู้ว่าระบบมีอะไรบ้าง ดูไฟล์นี้ไฟล์เดียว
 import { Router } from 'express';
+import { prisma } from './config/prisma.js';
 import authRoutes from './modules/auth/auth.routes.js';
 import profileRoutes from './modules/profile/profile.routes.js';
 import skillsRoutes from './modules/skills/skills.routes.js';
@@ -9,7 +10,16 @@ import messagesRoutes from './modules/messages/messages.routes.js';
 
 const router = Router();
 
-router.get('/health', (_req, res) => res.json({ ok: true, data: { status: 'up', time: new Date().toISOString() } }));
+// เปิด /api/health เพื่อดูว่าเซิร์ฟเวอร์ขึ้นและต่อฐานข้อมูลได้จริงหรือไม่
+router.get('/health', async (_req, res) => {
+  let database = 'ok';
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+  } catch (err) {
+    database = `ต่อฐานข้อมูลไม่ได้: ${err.message.split('\n')[0]}`;
+  }
+  res.json({ ok: true, data: { status: 'up', database, time: new Date().toISOString() } });
+});
 
 router.use('/auth', authRoutes);
 router.use('/profile', profileRoutes);

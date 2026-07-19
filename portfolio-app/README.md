@@ -104,7 +104,45 @@ cd frontend && npx serve -l 3000
 - IP ของผู้ส่งข้อความเก็บเป็นแฮช ไม่เก็บของจริง
 - ฟอร์มติดต่อมี honeypot ดักบอทที่กรอกทุกช่อง
 
-## เอาขึ้นออนไลน์จริง
+## เอาขึ้นออนไลน์ด้วย Vercel (โปรเจกต์เดียว จบทั้งหน้าบ้านและหลังบ้าน)
+
+โครงสร้างพร้อมแล้ว: `api/index.js` เป็น serverless function ส่วน `frontend/` เสิร์ฟเป็นไฟล์นิ่ง
+ทั้งคู่อยู่โดเมนเดียวกัน หน้าบ้านจึงเรียก `/api` ตรงๆ ได้โดยไม่ต้องตั้ง CORS
+
+**1. เตรียมฐานข้อมูล** — Vercel เปิด connection ใหม่ทุกครั้งที่ function ถูกเรียก
+ต้องใช้ Postgres ที่มี connection pooling ไม่งั้นจะเต็มเร็วมาก แนะนำ Neon หรือ Supabase
+และต้องใช้ **connection string แบบ pooled** (ของ Neon จะมี `-pooler` อยู่ในชื่อโฮสต์)
+
+**2. ตั้ง Environment Variables ใน Vercel** (Settings → Environment Variables)
+
+| ตัวแปร | ค่า |
+|---|---|
+| `DATABASE_URL` | connection string แบบ pooled ต่อท้ายด้วย `?pgbouncer=true&connection_limit=1` |
+| `JWT_SECRET` | สุ่มใหม่: `node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"` |
+| `NODE_ENV` | `production` |
+
+ไม่ต้องตั้ง `CORS_ORIGINS` เพราะอยู่โดเมนเดียวกัน
+
+**3. Deploy** — import repo เข้า Vercel ตั้ง Framework Preset เป็น **Other** และ
+**Root Directory ปล่อยเป็นค่าว่าง** (ชี้ที่ราก repo ไม่ใช่ `backend/`)
+
+**4. สร้างตารางและบัญชีแอดมิน** — รันจากเครื่องตัวเองครั้งเดียว โดยชี้ไปฐานข้อมูลจริง
+
+```bash
+export DATABASE_URL="connection string ตัวเดียวกับที่ใส่ใน Vercel"
+export ADMIN_EMAIL="you@example.com"
+export ADMIN_PASSWORD="รหัสที่จะใช้เข้าหลังบ้าน"
+export ADMIN_NAME="ชื่อของคุณ"
+npm install
+npm run db:push
+npm run db:seed
+```
+
+**5. ตรวจว่าใช้ได้** — เปิด `https://โดเมนของคุณ/api/health`
+ต้องได้ `{"ok":true,"data":{"status":"up","database":"ok"}}`
+ถ้า `database` ไม่ใช่ `ok` แปลว่า `DATABASE_URL` ผิด
+
+## เอาขึ้นออนไลน์แบบแยกส่วน (ทางเลือก)
 
 1. **ฐานข้อมูล** — Neon หรือ Supabase (มีแพลนฟรี) เอา connection string มาใส่ `DATABASE_URL`
 2. **หลังบ้าน** — Railway, Render หรือ Fly.io ชี้ไปที่โฟลเดอร์ `backend/` (มี Dockerfile ให้แล้ว)
