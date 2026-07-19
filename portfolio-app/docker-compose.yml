@@ -1,0 +1,33 @@
+# ยกทั้งระบบขึ้นในเครื่องด้วยคำสั่งเดียว: docker compose up
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: portfolio
+      POSTGRES_PASSWORD: portfolio
+      POSTGRES_DB: portfolio
+    ports: ["5432:5432"]
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U portfolio"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build: ./backend
+    env_file: ./backend/.env
+    environment:
+      DATABASE_URL: postgresql://portfolio:portfolio@db:5432/portfolio?schema=public
+    ports: ["4000:4000"]
+    depends_on:
+      db: { condition: service_healthy }
+
+  web:
+    image: nginx:alpine
+    volumes: ["./frontend:/usr/share/nginx/html:ro"]
+    ports: ["3000:80"]
+    depends_on: [api]
+
+volumes:
+  pgdata:

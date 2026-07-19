@@ -1,0 +1,110 @@
+// ============================================================
+//  ชั้นข้อมูล (Data layer) — โครงสร้างตารางทั้งหมดของระบบ
+//  แก้ไฟล์นี้แล้วรัน `npm run db:push` เพื่ออัปเดตฐานข้อมูล
+// ============================================================
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+/// บัญชีผู้ดูแล — ใช้เข้าหลังบ้านเท่านั้น ไม่เปิดให้สมัครเอง
+model User {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  email        String   @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("users")
+}
+
+/// ข้อมูลโปรไฟล์ มีแถวเดียวเสมอ (singleton) id ล็อกไว้ที่ "main"
+model Profile {
+  id          String   @id @default("main") @map("_id")
+  fullName    String
+  headline    String
+  bio         String
+  location    String?
+  email       String?
+  phone       String?
+  githubUrl   String?
+  linkedinUrl String?
+  websiteUrl  String?
+  avatarUrl   String?
+  resumeUrl   String?
+  updatedAt   DateTime @updatedAt
+
+  @@map("profile")
+}
+
+model Skill {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  category  String   @default("other") // language | framework | tool | other
+  level     Int      @default(3)       // 1-5
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([category, sortOrder])
+  @@map("skills")
+}
+
+enum ExperienceType {
+  WORK
+  EDUCATION
+}
+
+model Experience {
+  id        String         @id @default(auto()) @map("_id") @db.ObjectId
+  type      ExperienceType @default(WORK)
+  title     String
+  org       String
+  startDate DateTime
+  endDate   DateTime?      // null = ยังทำอยู่ถึงปัจจุบัน
+  bullets   String[]       @default([])
+  sortOrder Int            @default(0)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@index([type, sortOrder])
+  @@map("experiences")
+}
+
+model Project {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  slug        String   @unique
+  title       String
+  summary     String
+  description String?
+  coverEmoji  String   @default("{ }")
+  tags        String[] @default([])
+  repoUrl     String?
+  liveUrl     String?
+  featured    Boolean  @default(false)
+  published   Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([published, sortOrder])
+  @@map("projects")
+}
+
+/// ข้อความจากฟอร์มติดต่อหน้าบ้าน
+model Message {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  email     String
+  body      String
+  isRead    Boolean  @default(false)
+  ipHash    String?
+  createdAt DateTime @default(now())
+
+  @@index([isRead, createdAt])
+  @@map("messages")
+}

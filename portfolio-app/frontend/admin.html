@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>หลังบ้าน — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<!-- ---------- หน้าเข้าสู่ระบบ ---------- -->
+<div id="login-view" class="wrap hidden">
+  <form class="login-box" id="login-form" novalidate>
+    <h1>เข้าสู่ระบบหลังบ้าน</h1>
+    <div class="alert hidden" id="login-alert"></div>
+    <div class="field">
+      <label for="l-email">อีเมล</label>
+      <input id="l-email" name="email" type="email" required autocomplete="username">
+    </div>
+    <div class="field">
+      <label for="l-password">รหัสผ่าน</label>
+      <input id="l-password" name="password" type="password" required autocomplete="current-password">
+    </div>
+    <button class="btn btn-primary" type="submit" id="login-submit">เข้าสู่ระบบ</button>
+    <p class="hint" style="margin-top:1rem"><a href="index.html">กลับไปหน้าเว็บ</a></p>
+  </form>
+</div>
+
+<!-- ---------- แผงจัดการ ---------- -->
+<div id="admin-view" class="hidden">
+  <nav class="nav">
+    <div class="wrap">
+      <a class="nav-logo" href="index.html">~/admin</a>
+      <div class="nav-links">
+        <span style="font-family:var(--mono);font-size:.82rem" id="admin-who"></span>
+        <button class="btn btn-sm" id="logout-btn">ออกจากระบบ</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="admin-shell wrap">
+    <div class="alert hidden" id="admin-alert"></div>
+
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" data-tab="profile" aria-selected="true">โปรไฟล์</button>
+      <button class="tab" role="tab" data-tab="skills" aria-selected="false">ทักษะ</button>
+      <button class="tab" role="tab" data-tab="experiences" aria-selected="false">ประวัติ</button>
+      <button class="tab" role="tab" data-tab="projects" aria-selected="false">ผลงาน</button>
+      <button class="tab" role="tab" data-tab="messages" aria-selected="false">ข้อความ <span id="unread-badge"></span></button>
+    </div>
+
+    <!-- โปรไฟล์ -->
+    <section class="panel-view" data-view="profile">
+      <div class="admin-head"><h2>ข้อมูลโปรไฟล์</h2></div>
+      <form class="editor" id="profile-form">
+        <div class="grid-2">
+          <div class="field"><label for="p-fullName">ชื่อ-นามสกุล</label><input id="p-fullName" name="fullName" required></div>
+          <div class="field"><label for="p-headline">ตำแหน่ง / คำโปรย</label><input id="p-headline" name="headline" required></div>
+        </div>
+        <div class="field">
+          <label for="p-bio">แนะนำตัว</label>
+          <textarea id="p-bio" name="bio"></textarea>
+          <p class="hint">เว้นบรรทัดว่าง 1 บรรทัดเพื่อขึ้นย่อหน้าใหม่</p>
+        </div>
+        <div class="grid-2">
+          <div class="field"><label for="p-location">ที่อยู่</label><input id="p-location" name="location"></div>
+          <div class="field"><label for="p-email">อีเมล</label><input id="p-email" name="email" type="email"></div>
+          <div class="field"><label for="p-phone">เบอร์โทร</label><input id="p-phone" name="phone"></div>
+          <div class="field"><label for="p-githubUrl">GitHub URL</label><input id="p-githubUrl" name="githubUrl"></div>
+          <div class="field"><label for="p-linkedinUrl">LinkedIn URL</label><input id="p-linkedinUrl" name="linkedinUrl"></div>
+          <div class="field"><label for="p-websiteUrl">เว็บไซต์</label><input id="p-websiteUrl" name="websiteUrl"></div>
+          <div class="field"><label for="p-avatarUrl">รูปโปรไฟล์ (URL)</label><input id="p-avatarUrl" name="avatarUrl"></div>
+          <div class="field"><label for="p-resumeUrl">ไฟล์เรซูเม่ (URL)</label><input id="p-resumeUrl" name="resumeUrl"></div>
+        </div>
+        <button class="btn btn-primary" type="submit">บันทึกโปรไฟล์</button>
+      </form>
+    </section>
+
+    <!-- ทักษะ -->
+    <section class="panel-view hidden" data-view="skills">
+      <div class="admin-head"><h2>ทักษะ</h2></div>
+      <form class="editor" id="skill-form">
+        <h3 id="skill-form-title">เพิ่มทักษะใหม่</h3>
+        <input type="hidden" name="id">
+        <div class="grid-2">
+          <div class="field"><label for="s-name">ชื่อทักษะ</label><input id="s-name" name="name" required></div>
+          <div class="field">
+            <label for="s-category">หมวด</label>
+            <select id="s-category" name="category">
+              <option value="language">ภาษาโปรแกรม</option>
+              <option value="framework">เฟรมเวิร์ก</option>
+              <option value="tool">เครื่องมือ</option>
+              <option value="other" selected>อื่นๆ</option>
+            </select>
+          </div>
+          <div class="field"><label for="s-level">ระดับ 1-5</label><input id="s-level" name="level" type="number" min="1" max="5" value="3"></div>
+          <div class="field"><label for="s-sortOrder">ลำดับการแสดง</label><input id="s-sortOrder" name="sortOrder" type="number" value="0"></div>
+        </div>
+        <button class="btn btn-primary" type="submit">บันทึก</button>
+        <button class="btn btn-sm hidden" type="button" data-reset>ยกเลิกการแก้ไข</button>
+      </form>
+      <div class="row-list" id="skills-rows"></div>
+    </section>
+
+    <!-- ประวัติ -->
+    <section class="panel-view hidden" data-view="experiences">
+      <div class="admin-head"><h2>ประวัติการทำงานและการศึกษา</h2></div>
+      <form class="editor" id="experience-form">
+        <h3 id="experience-form-title">เพิ่มรายการใหม่</h3>
+        <input type="hidden" name="id">
+        <div class="grid-2">
+          <div class="field">
+            <label for="e-type">ประเภท</label>
+            <select id="e-type" name="type"><option value="WORK">การทำงาน</option><option value="EDUCATION">การศึกษา</option></select>
+          </div>
+          <div class="field"><label for="e-title">ตำแหน่ง / หลักสูตร</label><input id="e-title" name="title" required></div>
+          <div class="field"><label for="e-org">องค์กร / สถาบัน</label><input id="e-org" name="org" required></div>
+          <div class="field"><label for="e-sortOrder">ลำดับการแสดง</label><input id="e-sortOrder" name="sortOrder" type="number" value="0"></div>
+          <div class="field"><label for="e-startDate">วันที่เริ่ม</label><input id="e-startDate" name="startDate" type="date" required></div>
+          <div class="field">
+            <label for="e-endDate">วันที่สิ้นสุด</label><input id="e-endDate" name="endDate" type="date">
+            <p class="hint">เว้นว่างไว้ถ้ายังทำอยู่</p>
+          </div>
+        </div>
+        <div class="field">
+          <label for="e-bullets">รายละเอียด</label>
+          <textarea id="e-bullets" name="bullets"></textarea>
+          <p class="hint">พิมพ์บรรทัดละ 1 ข้อ</p>
+        </div>
+        <button class="btn btn-primary" type="submit">บันทึก</button>
+        <button class="btn btn-sm hidden" type="button" data-reset>ยกเลิกการแก้ไข</button>
+      </form>
+      <div class="row-list" id="experiences-rows"></div>
+    </section>
+
+    <!-- ผลงาน -->
+    <section class="panel-view hidden" data-view="projects">
+      <div class="admin-head"><h2>ผลงาน</h2></div>
+      <form class="editor" id="project-form">
+        <h3 id="project-form-title">เพิ่มผลงานใหม่</h3>
+        <input type="hidden" name="id">
+        <div class="grid-2">
+          <div class="field"><label for="pr-title">ชื่อโปรเจกต์</label><input id="pr-title" name="title" required></div>
+          <div class="field"><label for="pr-coverEmoji">สัญลักษณ์บนการ์ด</label><input id="pr-coverEmoji" name="coverEmoji" value="{ }" maxlength="8"></div>
+        </div>
+        <div class="field"><label for="pr-summary">คำอธิบายสั้น</label><input id="pr-summary" name="summary" required maxlength="300"></div>
+        <div class="field"><label for="pr-description">รายละเอียดเต็ม</label><textarea id="pr-description" name="description"></textarea></div>
+        <div class="grid-2">
+          <div class="field"><label for="pr-tags">แท็ก</label><input id="pr-tags" name="tags"><p class="hint">คั่นด้วยจุลภาค เช่น React, Node.js</p></div>
+          <div class="field"><label for="pr-sortOrder">ลำดับการแสดง</label><input id="pr-sortOrder" name="sortOrder" type="number" value="0"></div>
+          <div class="field"><label for="pr-liveUrl">ลิงก์เว็บจริง</label><input id="pr-liveUrl" name="liveUrl"></div>
+          <div class="field"><label for="pr-repoUrl">ลิงก์ซอร์สโค้ด</label><input id="pr-repoUrl" name="repoUrl"></div>
+        </div>
+        <div class="field">
+          <label><input type="checkbox" name="featured" style="width:auto"> ปักหมุดขึ้นก่อน</label>
+          <label><input type="checkbox" name="published" style="width:auto" checked> เผยแพร่บนหน้าเว็บ</label>
+        </div>
+        <button class="btn btn-primary" type="submit">บันทึก</button>
+        <button class="btn btn-sm hidden" type="button" data-reset>ยกเลิกการแก้ไข</button>
+      </form>
+      <div class="row-list" id="projects-rows"></div>
+    </section>
+
+    <!-- ข้อความ -->
+    <section class="panel-view hidden" data-view="messages">
+      <div class="admin-head"><h2>ข้อความจากฟอร์มติดต่อ</h2></div>
+      <div class="row-list" id="messages-rows"></div>
+    </section>
+  </main>
+</div>
+
+<script type="module" src="assets/js/admin.js"></script>
+</body>
+</html>
