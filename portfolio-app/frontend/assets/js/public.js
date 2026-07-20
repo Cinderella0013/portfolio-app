@@ -1,6 +1,9 @@
 // หน้าบ้าน: ดึงข้อมูลจาก API แล้ววาดลงหน้าเว็บ
 import { api, ApiClientError } from './api.js';
 import { $, esc, dateRange, showAlert, hideAlert } from './dom.js';
+import { t, initI18n } from './i18n.js';
+
+initI18n(); // สลับข้อความ static เป็นภาษาที่เลือกไว้ก่อนวาดส่วนอื่น
 
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -14,14 +17,14 @@ function renderProfile(p) {
 
   $('#about-bio').innerHTML = (p.bio || '')
     .split(/\n{2,}/).filter(Boolean)
-    .map((para) => `<p>${esc(para)}</p>`).join('') || '<p>ยังไม่ได้กรอกข้อมูลแนะนำตัว</p>';
+    .map((para) => `<p>${esc(para)}</p>`).join('') || `<p>${t('ยังไม่ได้กรอกข้อมูลแนะนำตัว', 'No bio yet')}</p>`;
 
   const links = [
-    ['ส่งอีเมล', p.email ? `mailto:${p.email}` : null],
+    [t('ส่งอีเมล', 'Email me'), p.email ? `mailto:${p.email}` : null],
     ['GitHub', p.githubUrl],
     ['LinkedIn', p.linkedinUrl],
-    ['เว็บไซต์', p.websiteUrl],
-    ['ดาวน์โหลดเรซูเม่', p.resumeUrl],
+    [t('เว็บไซต์', 'Website'), p.websiteUrl],
+    [t('ดาวน์โหลดเรซูเม่', 'Download resume'), p.resumeUrl],
   ].filter(([, href]) => href);
 
   $('#contact-links').innerHTML = links
@@ -59,7 +62,7 @@ function typeTerminal(lines) {
 const renderSkills = (skills) => {
   $('#skills-list').innerHTML = skills.length
     ? skills.map((s) => `<span class="sticker">${esc(s.name)}</span>`).join('')
-    : '<span class="sticker">ยังไม่ได้เพิ่มทักษะ</span>';
+    : `<span class="sticker">${t('ยังไม่ได้เพิ่มทักษะ', 'No skills yet')}</span>`;
 };
 
 /* ---------- ประวัติ ---------- */
@@ -72,7 +75,7 @@ const renderTimeline = (items) => {
         <p class="tl-org">${esc(e.org)}</p>
         ${e.bullets?.length ? `<ul>${e.bullets.map((b) => `<li>${esc(b)}</li>`).join('')}</ul>` : ''}
       </div>`).join('')
-    : '<p class="empty">ยังไม่ได้เพิ่มประวัติ</p>';
+    : `<p class="empty">${t('ยังไม่ได้เพิ่มประวัติ', 'Nothing here yet')}</p>`;
 };
 
 /* ---------- ผลงาน ---------- */
@@ -86,12 +89,12 @@ const renderProjects = (projects) => {
           <p>${esc(p.summary)}</p>
           <div class="tags">${(p.tags || []).map((t) => `<span class="tag">${esc(t)}</span>`).join('')}</div>
           <div>
-            ${p.liveUrl ? `<a class="card-link" href="${esc(p.liveUrl)}" target="_blank" rel="noopener">เปิดดู →</a>` : ''}
-            ${p.repoUrl ? `<a class="card-link" href="${esc(p.repoUrl)}" target="_blank" rel="noopener">ซอร์สโค้ด →</a>` : ''}
+            ${p.liveUrl ? `<a class="card-link" href="${esc(p.liveUrl)}" target="_blank" rel="noopener">${t('เปิดดู', 'Live')} →</a>` : ''}
+            ${p.repoUrl ? `<a class="card-link" href="${esc(p.repoUrl)}" target="_blank" rel="noopener">${t('ซอร์สโค้ด', 'Source')} →</a>` : ''}
           </div>
         </div>
       </article>`).join('')
-    : '<p class="empty">ยังไม่ได้เพิ่มผลงาน</p>';
+    : `<p class="empty">${t('ยังไม่ได้เพิ่มผลงาน', 'No projects yet')}</p>`;
 };
 
 /* ---------- ฟอร์มติดต่อ ---------- */
@@ -104,14 +107,14 @@ function bindContactForm() {
     e.preventDefault();
     hideAlert(alertBox);
     submit.disabled = true;
-    submit.textContent = 'กำลังส่ง…';
+    submit.textContent = t('กำลังส่ง…', 'Sending…');
 
     const payload = Object.fromEntries(new FormData(form).entries());
 
     try {
       await api.messages.send(payload);
       form.reset();
-      showAlert(alertBox, 'ส่งข้อความเรียบร้อยแล้ว ขอบคุณครับ', 'success');
+      showAlert(alertBox, t('ส่งข้อความเรียบร้อยแล้ว ขอบคุณครับ', 'Message sent — thank you!'), 'success');
     } catch (err) {
       const detail = err instanceof ApiClientError && err.details?.length
         ? ` (${err.details.map((d) => d.message).join(', ')})`
@@ -119,7 +122,7 @@ function bindContactForm() {
       showAlert(alertBox, err.message + detail);
     } finally {
       submit.disabled = false;
-      submit.textContent = 'ส่งข้อความ';
+      submit.textContent = t('ส่งข้อความ', 'Send message');
     }
   });
 }
@@ -145,7 +148,7 @@ function bindReveal() {
   ]);
 
   if (profile.status === 'fulfilled') renderProfile(profile.value);
-  else $('#hero-name').textContent = 'โหลดข้อมูลไม่สำเร็จ';
+  else $('#hero-name').textContent = t('โหลดข้อมูลไม่สำเร็จ', 'Failed to load');
 
   if (skills.status === 'fulfilled') renderSkills(skills.value);
   if (experiences.status === 'fulfilled') renderTimeline(experiences.value);

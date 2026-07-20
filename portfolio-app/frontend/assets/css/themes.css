@@ -113,6 +113,60 @@
 body.party{ animation:party-hue 3s linear infinite; }
 @keyframes party-hue{ to{ filter:hue-rotate(360deg); } }
 
+/* ============================================================
+   อนิเมชั่นทั่วหน้า
+   ============================================================ */
+
+/* แถบบอกตำแหน่งเลื่อนหน้า (fx.js คุมความกว้าง) */
+#scroll-progress{
+  position:fixed; top:0; left:0; height:4px; width:0; z-index:100;
+  background:linear-gradient(90deg,var(--pink),var(--sky),var(--grape));
+}
+
+/* hero ไหลเข้าตอนโหลดหน้า */
+.hero-grid > div{ animation:rise-in .7s cubic-bezier(.2,.9,.3,1.2) backwards; }
+.hero-grid > div:last-child{ animation-delay:.18s; }
+@keyframes rise-in{ from{ opacity:0; transform:translateY(28px); } }
+
+/* ปุ่ม: กดแล้วยุบ + แสงกวาดผ่านตอน hover */
+.btn{ position:relative; overflow:hidden; }
+.btn:active{ transform:translate(5px,5px) scale(.97); box-shadow:1px 1px 0 var(--ink); }
+.btn::after{
+  content:''; position:absolute; top:0; bottom:0; left:-80%; width:50%;
+  background:linear-gradient(105deg,transparent,rgba(255,255,255,.55),transparent);
+  transform:skewX(-20deg); pointer-events:none;
+}
+.btn:hover::after{ animation:btn-shine .6s ease; }
+@keyframes btn-shine{ to{ left:130%; } }
+
+/* ลิงก์ nav: เส้นใต้วิ่งจากซ้ายไปขวา */
+.nav-links a{
+  background-image:linear-gradient(var(--pink),var(--pink));
+  background-repeat:no-repeat; background-size:0% 3px; background-position:left 88%;
+  transition:background-size .25s ease;
+}
+.nav-links a:hover{ background-size:100% 3px; }
+
+/* ของในแต่ละ section ทยอยโผล่ทีละชิ้นตอนเลื่อนถึง */
+.reveal .sticker, .reveal .tl-item, .reveal .card{
+  opacity:0; transform:translateY(16px);
+  transition:opacity .45s ease, transform .45s ease;
+}
+.reveal.shown .sticker, .reveal.shown .tl-item, .reveal.shown .card{ opacity:1; transform:none; }
+.reveal.shown :is(.sticker,.tl-item,.card):nth-child(2){ transition-delay:.08s; }
+.reveal.shown :is(.sticker,.tl-item,.card):nth-child(3){ transition-delay:.16s; }
+.reveal.shown :is(.sticker,.tl-item,.card):nth-child(4){ transition-delay:.24s; }
+.reveal.shown :is(.sticker,.tl-item,.card):nth-child(5){ transition-delay:.32s; }
+.reveal.shown :is(.sticker,.tl-item,.card):nth-child(n+6){ transition-delay:.4s; }
+
+/* การ์ดผลงานเอียงนิดๆ ตอน hover ให้มีชีวิต */
+.card:hover{ transform:translate(-4px,-6px) rotate(-.7deg); }
+
+/* marquee หยุดให้อ่านตอนเอาเมาส์ชี้ */
+.y2k-marquee:hover span{ animation-play-state:paused; }
+
 @media (prefers-reduced-motion:reduce){
   .y2k-marquee span{ animation:none; padding-left:0; }
+  #scroll-progress{ display:none; }
+  .reveal .sticker, .reveal .tl-item, .reveal .card{ opacity:1; transform:none; }
 }

@@ -18,6 +18,19 @@ if (!reduced) {
   });
 }
 
+/* ---------- แถบบอกตำแหน่งเลื่อนหน้า ---------- */
+if (!reduced) {
+  const bar = document.createElement('div');
+  bar.id = 'scroll-progress';
+  document.body.appendChild(bar);
+  const update = () => {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    bar.style.width = `${max > 0 ? (scrollY / max) * 100 : 0}%`;
+  };
+  addEventListener('scroll', update, { passive: true });
+  update();
+}
+
 /* ---------- โหมดปาร์ตี้: พิมพ์รหัส Konami (↑↑↓↓←→←→BA) ---------- */
 const KONAMI = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
 let pos = 0;

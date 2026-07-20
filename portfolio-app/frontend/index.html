@@ -17,10 +17,11 @@
   <div class="wrap">
     <a class="nav-logo" href="#top" id="nav-logo">~/portfolio</a>
     <div class="nav-links">
-      <a href="#about">เกี่ยวกับฉัน</a>
-      <a href="#work">ประวัติ</a>
-      <a href="#projects">ผลงาน</a>
-      <a href="#contact">ติดต่อ</a>
+      <a href="#about" data-en="About">เกี่ยวกับฉัน</a>
+      <a href="#work" data-en="Journey">ประวัติ</a>
+      <a href="#projects" data-en="Work">ผลงาน</a>
+      <a href="#contact" data-en="Contact">ติดต่อ</a>
+      <button class="btn btn-sm" id="lang-btn" aria-label="เปลี่ยนภาษา">EN</button>
     </div>
   </div>
 </nav>
@@ -28,12 +29,12 @@
 <header class="hero wrap theme-y2k" id="top">
   <div class="hero-grid">
     <div>
-      <span class="hero-hi">ยินดีที่ได้รู้จักครับ 👋</span>
-      <h1>สวัสดี ผมชื่อ<br><em id="hero-name">กำลังโหลด…</em></h1>
+      <span class="hero-hi" data-en="Nice to meet you 👋">ยินดีที่ได้รู้จักครับ 👋</span>
+      <h1><span data-en="Hi, I'm">สวัสดี ผมชื่อ</span><br><em id="hero-name" data-en="Loading…">กำลังโหลด…</em></h1>
       <p class="hero-role" id="hero-headline"></p>
       <div class="hero-cta">
-        <a class="btn btn-primary" href="#projects">ดูผลงาน</a>
-        <a class="btn" href="#contact">ติดต่อผม</a>
+        <a class="btn btn-primary" href="#projects" data-en="View my work">ดูผลงาน</a>
+        <a class="btn" href="#contact" data-en="Contact me">ติดต่อผม</a>
       </div>
     </div>
     <div class="term" aria-hidden="true">
@@ -53,8 +54,8 @@
 </div>
 
 <section class="section wrap reveal theme-hand" id="about">
-  <p class="eyebrow">// 01 — เกี่ยวกับฉัน</p>
-  <h2>เขียนโค้ดเพราะชอบเห็นของที่<mark>คนใช้แล้วไม่ต้องถาม</mark></h2>
+  <p class="eyebrow" data-en="// 01 — About me">// 01 — เกี่ยวกับฉัน</p>
+  <h2 data-en="I write code because I love things <mark>people just get</mark>">เขียนโค้ดเพราะชอบเห็นของที่<mark>คนใช้แล้วไม่ต้องถาม</mark></h2>
   <div class="about-grid">
     <div class="about-text" id="about-bio"></div>
     <div class="panel">
@@ -65,34 +66,34 @@
 </section>
 
 <section class="section wrap reveal theme-retro" id="work">
-  <p class="eyebrow">// 02 — ประวัติการทำงานและการศึกษา</p>
-  <h2>เส้นทางที่<mark>พาผมมาถึงตรงนี้</mark></h2>
+  <p class="eyebrow" data-en="// 02 — Work &amp; Education">// 02 — ประวัติการทำงานและการศึกษา</p>
+  <h2 data-en="The path that <mark>led me here</mark>">เส้นทางที่<mark>พาผมมาถึงตรงนี้</mark></h2>
   <div class="timeline" id="timeline"></div>
 </section>
 
 <section class="section wrap reveal theme-cyber" id="projects">
-  <p class="eyebrow">// 03 — ผลงาน</p>
-  <h2>ของที่<mark>ทำเสร็จแล้ว</mark> และมีคนใช้จริง</h2>
+  <p class="eyebrow" data-en="// 03 — Work">// 03 — ผลงาน</p>
+  <h2 data-en="Things <mark>I've shipped</mark> that people actually use">ของที่<mark>ทำเสร็จแล้ว</mark> และมีคนใช้จริง</h2>
   <div class="proj-grid" id="projects-grid"></div>
 </section>
 
 <section class="section wrap reveal" id="contact">
   <div class="contact">
-    <p class="eyebrow" style="color:var(--lemon)">// 04 — ติดต่อ</p>
-    <h2>มีงานที่อยากให้ช่วยดูไหมครับ</h2>
+    <p class="eyebrow" style="color:var(--lemon)" data-en="// 04 — Contact">// 04 — ติดต่อ</p>
+    <h2 data-en="Got something you'd like me to build?">มีงานที่อยากให้ช่วยดูไหมครับ</h2>
     <div class="contact-grid">
       <form id="contact-form" novalidate>
         <div class="alert hidden" id="contact-alert"></div>
         <div class="field">
-          <label for="c-name">ชื่อของคุณ</label>
+          <label for="c-name" data-en="Your name">ชื่อของคุณ</label>
           <input id="c-name" name="name" required maxlength="120">
         </div>
         <div class="field">
-          <label for="c-email">อีเมลที่ให้ติดต่อกลับ</label>
+          <label for="c-email" data-en="Email for reply">อีเมลที่ให้ติดต่อกลับ</label>
           <input id="c-email" name="email" type="email" required>
         </div>
         <div class="field">
-          <label for="c-body">รายละเอียดงาน</label>
+          <label for="c-body" data-en="Project details">รายละเอียดงาน</label>
           <textarea id="c-body" name="body" required minlength="10" maxlength="4000"></textarea>
         </div>
         <!-- กับดักบอท: ผู้ใช้จริงมองไม่เห็นช่องนี้ -->
@@ -100,10 +101,10 @@
           <label for="c-website">Website</label>
           <input id="c-website" name="website" tabindex="-1" autocomplete="off">
         </div>
-        <button class="btn" type="submit" id="contact-submit">ส่งข้อความ</button>
+        <button class="btn" type="submit" id="contact-submit" data-en="Send message">ส่งข้อความ</button>
       </form>
       <div>
-        <p style="margin-bottom:1.2rem">ตอบกลับภายใน 1 วันทำการ หรือทักผ่านช่องทางด้านล่างได้เลย</p>
+        <p style="margin-bottom:1.2rem" data-en="I reply within 1 business day — or reach me directly below">ตอบกลับภายใน 1 วันทำการ หรือทักผ่านช่องทางด้านล่างได้เลย</p>
         <div class="contact-links" id="contact-links"></div>
       </div>
     </div>
@@ -112,7 +113,6 @@
 
 <footer class="footer wrap">
   <span id="footer-name">© 2026</span>
-  <a href="admin.html">เข้าหลังบ้าน</a>
 </footer>
 
 <script type="module" src="assets/js/public.js"></script>
