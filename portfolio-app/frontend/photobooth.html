@@ -12,29 +12,56 @@
 <link rel="stylesheet" href="assets/css/themes.css">
 <style>
 /* สไตล์เฉพาะหน้านี้ — น้อยพอที่ไม่ต้องแยกไฟล์ css */
-.booth{ max-width:640px; margin:2.5rem auto 4rem; }
+.booth{ max-width:680px; margin:2.5rem auto 4rem; }
 .booth h1{ font-family:var(--display); font-size:clamp(1.6rem,5vw,2.4rem); margin-bottom:.3rem; }
 .booth .sub{ font-family:var(--mono); font-size:.85rem; opacity:.7; margin-bottom:1.4rem; }
+.booth h2{ font-family:var(--display); font-size:1.15rem; margin:1.2rem 0 .6rem; }
+
+/* เลือก layout */
+.layout-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:.8rem; }
+.layout-btn{ display:flex; flex-direction:column; align-items:center; gap:.6rem; padding:1rem; }
+.layout-mini{ display:grid; gap:3px; }
+.layout-mini i{ display:block; width:26px; height:20px; background:var(--ink); opacity:.8; }
+
+/* กล้อง */
 .booth-frame{
   border:var(--border); box-shadow:var(--shadow); background:var(--ink);
   aspect-ratio:4/3; overflow:hidden; position:relative;
 }
-.booth-frame video, .booth-frame img{
-  width:100%; height:100%; object-fit:cover; display:block;
-}
-.booth-frame video{ transform:scaleX(-1); } /* พรีวิวแบบกระจก ให้ขยับแล้วไม่งง */
-.booth-frame .flash{
-  position:absolute; inset:0; background:#fff; opacity:0; pointer-events:none;
-}
+.booth-frame video{ width:100%; height:100%; object-fit:cover; display:block; transform:scaleX(-1); } /* พรีวิวแบบกระจก */
+.booth-frame .flash{ position:absolute; inset:0; background:#fff; opacity:0; pointer-events:none; }
 .booth-frame .flash.go{ animation:flash .35s ease-out; }
 @keyframes flash{ from{ opacity:1; } }
 .booth-msg{
   position:absolute; inset:0; display:grid; place-items:center; text-align:center;
   color:#EDEBFF; font-family:var(--mono); font-size:.9rem; padding:1.5rem;
 }
-.filters{ display:flex; flex-wrap:wrap; gap:.5rem; margin:1.2rem 0; }
-.filters .btn[aria-pressed="true"]{ background:var(--lemon); transform:translate(3px,3px); box-shadow:3px 3px 0 var(--ink); }
-.booth-actions{ display:flex; flex-wrap:wrap; gap:.8rem; }
+.shoot-count{
+  position:absolute; top:.6rem; left:.6rem; font-family:var(--mono); font-weight:600;
+  background:var(--lemon); border:2px solid var(--ink); padding:.1rem .55rem; font-size:.85rem;
+}
+.filters, .booth-actions{ display:flex; flex-wrap:wrap; gap:.5rem; margin:1rem 0; }
+.filters .btn[aria-pressed="true"], .opts .btn[aria-pressed="true"]{
+  background:var(--lemon); transform:translate(3px,3px); box-shadow:3px 3px 0 var(--ink);
+}
+
+/* หน้ารีวิว + แต่งรูป */
+.edit-grid{ display:grid; grid-template-columns:auto 1fr; gap:1.4rem; align-items:start; }
+#preview{
+  border:var(--border); box-shadow:var(--shadow); background:#fff;
+  max-width:min(300px,42vw); max-height:64vh; width:auto; height:auto; cursor:crosshair;
+}
+.thumbs{ display:flex; flex-wrap:wrap; gap:.5rem; }
+.thumbs img{ width:64px; border:2px solid var(--ink); display:block; }
+.thumbs .btn{ padding:.2rem .4rem; display:flex; flex-direction:column; align-items:center; gap:.2rem; font-size:.72rem; }
+.opts{ display:flex; flex-wrap:wrap; gap:.5rem; }
+.swatch{ width:34px; height:34px; padding:0; }
+.opts .sticker-btn{ font-size:1.1rem; padding:.2rem .5rem; }
+.hint-sm{ font-family:var(--mono); font-size:.75rem; opacity:.65; margin-top:.3rem; }
+@media (max-width:640px){
+  .edit-grid{ grid-template-columns:1fr; }
+  #preview{ max-width:100%; max-height:none; margin-inline:auto; }
+}
 </style>
 </head>
 <body>
@@ -51,22 +78,56 @@
 
 <main class="booth wrap">
   <h1 data-en="📸 You found the secret photobooth!">📸 เจอห้องถ่ายรูปลับแล้ว!</h1>
-  <p class="sub" data-en="// pick a filter, strike a pose, snap">// เลือกฟิลเตอร์ จัดท่า แล้วกดถ่ายได้เลย</p>
+  <p class="sub" data-en="// pick a layout, strike a pose, decorate, save">// เลือก layout จัดท่าถ่าย แต่งรูป แล้วเซฟ</p>
 
-  <div class="booth-frame">
-    <video id="cam" autoplay playsinline muted></video>
-    <img id="shot" class="hidden" alt="">
-    <div class="booth-msg hidden" id="cam-msg"></div>
-    <div class="flash" id="flash"></div>
-  </div>
+  <!-- เฟส 1: เลือก layout -->
+  <section id="layout-view">
+    <h2 data-en="1 · Pick your layout">1 · เลือก layout</h2>
+    <div class="layout-grid" id="layout-grid"></div>
+  </section>
 
-  <div class="filters" id="filters" role="group" aria-label="ฟิลเตอร์"></div>
+  <!-- เฟส 2: ถ่ายรูป -->
+  <section id="shoot-view" class="hidden">
+    <h2 data-en="2 · Strike a pose">2 · จัดท่าแล้วกดถ่าย</h2>
+    <div class="booth-frame">
+      <video id="cam" autoplay playsinline muted></video>
+      <span class="shoot-count" id="shoot-count"></span>
+      <div class="booth-msg hidden" id="cam-msg"></div>
+      <div class="flash" id="flash"></div>
+    </div>
+    <div class="filters" id="filters" role="group" aria-label="ฟิลเตอร์"></div>
+    <div class="booth-actions">
+      <button class="btn btn-primary" id="snap-btn" data-en="📷 Snap!">📷 ถ่ายเลย!</button>
+      <button class="btn" id="back-layout-btn" data-en="← Change layout">← เปลี่ยน layout</button>
+    </div>
+  </section>
 
-  <div class="booth-actions">
-    <button class="btn btn-primary" id="snap-btn" data-en="📷 Snap!">📷 ถ่ายเลย!</button>
-    <a class="btn hidden" id="save-btn" download="photobooth.png" data-en="💾 Save photo">💾 บันทึกรูป</a>
-    <button class="btn hidden" id="retake-btn" data-en="🔁 Retake">🔁 ถ่ายใหม่</button>
-  </div>
+  <!-- เฟส 3: รีวิว + แต่งรูป -->
+  <section id="edit-view" class="hidden">
+    <h2 data-en="3 · Review &amp; decorate">3 · รีวิวและแต่งรูป</h2>
+    <div class="edit-grid">
+      <canvas id="preview"></canvas>
+      <div>
+        <h2 data-en="Retake a photo">ถ่ายซ่อมรายรูป</h2>
+        <div class="thumbs" id="thumbs"></div>
+
+        <h2 data-en="Frame color">สีกรอบ</h2>
+        <div class="opts" id="frame-colors"></div>
+
+        <h2 data-en="Photo shape">รูปทรงรูป</h2>
+        <div class="opts" id="shapes"></div>
+
+        <h2 data-en="Stickers">สติกเกอร์</h2>
+        <div class="opts" id="stickers"></div>
+        <p class="hint-sm" data-en="pick a sticker then tap the photo to place it · tap a placed sticker to remove">เลือกสติกเกอร์แล้วแตะบนรูปเพื่อวาง · แตะสติกเกอร์ที่วางแล้วเพื่อลบ</p>
+
+        <div class="booth-actions">
+          <a class="btn btn-primary" id="save-btn" download="photobooth.png" data-en="💾 Save photo">💾 บันทึกรูป</a>
+          <button class="btn" id="restart-btn" data-en="🔁 Start over">🔁 เริ่มใหม่</button>
+        </div>
+      </div>
+    </div>
+  </section>
 </main>
 
 <script type="module" src="assets/js/photobooth.js"></script>
