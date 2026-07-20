@@ -25,7 +25,11 @@ export const createApp = () => {
       origin(origin, cb) {
         // ไม่มี origin = เรียกจาก curl หรือ server ด้วยกันเอง ปล่อยผ่าน
         if (!origin || env.corsOrigins.includes(origin)) return cb(null, true);
-        cb(new Error(`origin ${origin} ไม่ได้รับอนุญาต`));
+        // origin นอกลิสต์: แค่ไม่ใส่ header CORS พอ ห้ามโยน error
+        // เพราะ request จากโดเมนเดียวกัน (เช่นโดเมนจริงที่เพิ่งผูก) ก็ส่ง Origin มาด้วย
+        // ถ้าโยน error จะพังทั้งที่ same-origin ไม่ต้องใช้ CORS เลย
+        // ส่วน cross-origin จริงๆ browser จะบล็อกเองเมื่อไม่เห็น header
+        cb(null, false);
       },
     }));
   }
