@@ -43,6 +43,22 @@ addEventListener('keydown', (e) => {
   }
 });
 
+/* ---------- ของลับ: icon กล้องซ่อนอยู่ตำแหน่งสุ่ม หาเจอแล้วคลิกเข้า photobooth ---------- */
+addEventListener('load', () => {
+  setTimeout(() => { // รอข้อมูลจาก API วาดเสร็จก่อน ความสูงหน้าจะได้นิ่ง
+    const cam = document.createElement('a');
+    cam.className = 'cam-hunt';
+    cam.href = 'photobooth.html';
+    cam.textContent = '📷';
+    cam.setAttribute('aria-label', 'secret photobooth');
+    const maxTop = document.documentElement.scrollHeight - 120;
+    cam.style.top = `${Math.floor(120 + Math.random() * (maxTop - 120))}px`;
+    cam.style.left = `${Math.floor(4 + Math.random() * 88)}vw`;
+    cam.style.rotate = `${Math.floor(Math.random() * 40 - 20)}deg`;
+    document.body.appendChild(cam);
+  }, 1200);
+});
+
 /* ---------- โลโก้ nav: คลิก 5 ครั้งติดๆ หมุนทั้งหน้า 1 รอบ ---------- */
 let clicks = 0, clickTimer;
 document.getElementById('nav-logo')?.addEventListener('click', () => {

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex"><!-- ห้องลับ ไม่ต้องให้ search engine เจอ -->
+<title>Photobooth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/themes.css">
+<style>
+/* สไตล์เฉพาะหน้านี้ — น้อยพอที่ไม่ต้องแยกไฟล์ css */
+.booth{ max-width:640px; margin:2.5rem auto 4rem; }
+.booth h1{ font-family:var(--display); font-size:clamp(1.6rem,5vw,2.4rem); margin-bottom:.3rem; }
+.booth .sub{ font-family:var(--mono); font-size:.85rem; opacity:.7; margin-bottom:1.4rem; }
+.booth-frame{
+  border:var(--border); box-shadow:var(--shadow); background:var(--ink);
+  aspect-ratio:4/3; overflow:hidden; position:relative;
+}
+.booth-frame video, .booth-frame img{
+  width:100%; height:100%; object-fit:cover; display:block;
+}
+.booth-frame video{ transform:scaleX(-1); } /* พรีวิวแบบกระจก ให้ขยับแล้วไม่งง */
+.booth-frame .flash{
+  position:absolute; inset:0; background:#fff; opacity:0; pointer-events:none;
+}
+.booth-frame .flash.go{ animation:flash .35s ease-out; }
+@keyframes flash{ from{ opacity:1; } }
+.booth-msg{
+  position:absolute; inset:0; display:grid; place-items:center; text-align:center;
+  color:#EDEBFF; font-family:var(--mono); font-size:.9rem; padding:1.5rem;
+}
+.filters{ display:flex; flex-wrap:wrap; gap:.5rem; margin:1.2rem 0; }
+.filters .btn[aria-pressed="true"]{ background:var(--lemon); transform:translate(3px,3px); box-shadow:3px 3px 0 var(--ink); }
+.booth-actions{ display:flex; flex-wrap:wrap; gap:.8rem; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap">
+    <a class="nav-logo" href="index.html">~/photobooth</a>
+    <div class="nav-links">
+      <a href="index.html" data-en="Back to site">กลับหน้าเว็บ</a>
+      <button class="btn btn-sm" id="lang-btn" aria-label="เปลี่ยนภาษา">EN</button>
+    </div>
+  </div>
+</nav>
+
+<main class="booth wrap">
+  <h1 data-en="📸 You found the secret photobooth!">📸 เจอห้องถ่ายรูปลับแล้ว!</h1>
+  <p class="sub" data-en="// pick a filter, strike a pose, snap">// เลือกฟิลเตอร์ จัดท่า แล้วกดถ่ายได้เลย</p>
+
+  <div class="booth-frame">
+    <video id="cam" autoplay playsinline muted></video>
+    <img id="shot" class="hidden" alt="">
+    <div class="booth-msg hidden" id="cam-msg"></div>
+    <div class="flash" id="flash"></div>
+  </div>
+
+  <div class="filters" id="filters" role="group" aria-label="ฟิลเตอร์"></div>
+
+  <div class="booth-actions">
+    <button class="btn btn-primary" id="snap-btn" data-en="📷 Snap!">📷 ถ่ายเลย!</button>
+    <a class="btn hidden" id="save-btn" download="photobooth.png" data-en="💾 Save photo">💾 บันทึกรูป</a>
+    <button class="btn hidden" id="retake-btn" data-en="🔁 Retake">🔁 ถ่ายใหม่</button>
+  </div>
+</main>
+
+<script type="module" src="assets/js/photobooth.js"></script>
+</body>
+</html>
