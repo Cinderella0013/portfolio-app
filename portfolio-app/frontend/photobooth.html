@@ -40,6 +40,15 @@
   position:absolute; top:.6rem; left:.6rem; font-family:var(--mono); font-weight:600;
   background:var(--lemon); border:2px solid var(--ink); padding:.1rem .55rem; font-size:.85rem;
 }
+.count-num{ /* เลขนับถอยหลังกลางจอ */
+  position:absolute; inset:0; display:grid; place-items:center; pointer-events:none;
+  font-family:var(--display); font-weight:700; font-size:6rem; color:#fff;
+  text-shadow:0 0 20px rgba(0,0,0,.65);
+}
+.count-num.tick{ animation:count-pop .9s ease-out; }
+@keyframes count-pop{ from{ opacity:0; transform:scale(1.6); } 30%{ opacity:1; transform:scale(1); } }
+.date-toggle{ display:flex; align-items:center; gap:.5rem; margin-top:1rem; font-size:.9rem; }
+.date-toggle input{ width:18px; height:18px; accent-color:var(--grape); }
 .filters, .booth-actions{ display:flex; flex-wrap:wrap; gap:.5rem; margin:1rem 0; }
 .filters .btn[aria-pressed="true"], .opts .btn[aria-pressed="true"]{
   background:var(--lemon); transform:translate(3px,3px); box-shadow:3px 3px 0 var(--ink);
@@ -92,9 +101,11 @@
     <div class="booth-frame">
       <video id="cam" autoplay playsinline muted></video>
       <span class="shoot-count" id="shoot-count"></span>
+      <div class="count-num" id="count-num"></div>
       <div class="booth-msg hidden" id="cam-msg"></div>
       <div class="flash" id="flash"></div>
     </div>
+    <div class="opts" id="shoot-mode" role="group" aria-label="โหมดถ่าย" style="margin-top:1rem"></div>
     <div class="filters" id="filters" role="group" aria-label="ฟิลเตอร์"></div>
     <div class="booth-actions">
       <button class="btn btn-primary" id="snap-btn" data-en="📷 Snap!">📷 ถ่ายเลย!</button>
@@ -111,7 +122,10 @@
         <h2 data-en="Retake a photo">ถ่ายซ่อมรายรูป</h2>
         <div class="thumbs" id="thumbs"></div>
 
-        <h2 data-en="Frame color">สีกรอบ</h2>
+        <h2 data-en="Photo size">สัดส่วนรูป</h2>
+        <div class="opts" id="sizes"></div>
+
+        <h2 data-en="Frame style">สีและลายกรอบ</h2>
         <div class="opts" id="frame-colors"></div>
 
         <h2 data-en="Photo shape">รูปทรงรูป</h2>
@@ -120,6 +134,11 @@
         <h2 data-en="Stickers">สติกเกอร์</h2>
         <div class="opts" id="stickers"></div>
         <p class="hint-sm" data-en="pick a sticker then tap the photo to place it · tap a placed sticker to remove">เลือกสติกเกอร์แล้วแตะบนรูปเพื่อวาง · แตะสติกเกอร์ที่วางแล้วเพื่อลบ</p>
+
+        <label class="date-toggle">
+          <input type="checkbox" id="date-toggle" checked>
+          <span data-en="Show date on the strip">ใส่วันที่ท้ายรูป</span>
+        </label>
 
         <div class="booth-actions">
           <a class="btn btn-primary" id="save-btn" download="photobooth.png" data-en="💾 Save photo">💾 บันทึกรูป</a>

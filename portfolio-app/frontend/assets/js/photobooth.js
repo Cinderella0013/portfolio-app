@@ -19,30 +19,110 @@ const LAYOUTS = [
   { th: 'แถบ 4 รูป', en: 'Strip of 4', cols: 1, rows: 4 },
   { th: 'ตาราง 2×2', en: '2×2 Grid', cols: 2, rows: 2 },
 ];
-const FRAME_COLORS = ['#FFFFFF', '#FFD6F5', '#FFD23F', '#2EE6A8', '#46C6FF', '#FF4D8D', '#6C4DF6', '#17142B'];
+const MODES = [
+  { id: 'manual', th: '👆 กดถ่ายเองทีละรูป', en: '👆 Snap each shot myself' },
+  { id: 'timer', th: '⏱ นับถอยหลัง 3 วิ ทุกรูป', en: '⏱ 3-sec countdown per shot' },
+];
+// สัดส่วนของช่องรูป — ตอนวาดใช้วิธี cover-crop เหมือน object-fit:cover ไม่มีการบีบภาพ
+const SIZES = [
+  { th: 'แนวนอน 4:3', en: 'Landscape 4:3', w: 480, h: 360 },
+  { th: 'จัตุรัส 1:1', en: 'Square 1:1', w: 420, h: 420 },
+  { th: 'แนวตั้ง 3:4', en: 'Portrait 3:4', w: 360, h: 480 },
+];
+// กรอบ: สีพื้น + ลาย — css ใช้โชว์บนปุ่ม ส่วน paint วาดจริงลง canvas
+const solid = (c) => (ctx, w, h) => { ctx.fillStyle = c; ctx.fillRect(0, 0, w, h); };
+const FRAMES = [
+  { css: '#FFFFFF', paint: solid('#FFFFFF') },
+  { css: '#FFD6F5', paint: solid('#FFD6F5') },
+  { css: '#FFD23F', paint: solid('#FFD23F') },
+  { css: '#2EE6A8', paint: solid('#2EE6A8') },
+  { css: '#46C6FF', paint: solid('#46C6FF') },
+  { css: '#FF4D8D', paint: solid('#FF4D8D') },
+  { css: '#17142B', dark: true, paint: solid('#17142B') },
+  {
+    css: 'linear-gradient(135deg,#FFD6F5,#D1E8FF,#E8D6FF)', // ไล่สี Y2K
+    paint(ctx, w, h) {
+      const g = ctx.createLinearGradient(0, 0, w, h);
+      g.addColorStop(0, '#FFD6F5'); g.addColorStop(.5, '#D1E8FF'); g.addColorStop(1, '#E8D6FF');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+    },
+  },
+  {
+    css: 'linear-gradient(180deg,#FFD23F,#FF4D8D,#6C4DF6)', dark: true, // ไล่สีพระอาทิตย์ตก
+    paint(ctx, w, h) {
+      const g = ctx.createLinearGradient(0, 0, 0, h);
+      g.addColorStop(0, '#FFD23F'); g.addColorStop(.55, '#FF4D8D'); g.addColorStop(1, '#6C4DF6');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+    },
+  },
+  {
+    css: 'radial-gradient(#FF4D8D 26%, transparent 27%) #fff 0 0/16px 16px', // จุดโพลก้า
+    paint(ctx, w, h) {
+      solid('#FFFFFF')(ctx, w, h);
+      ctx.fillStyle = '#FF4D8D';
+      for (let y = 12; y < h; y += 26) {
+        for (let x = 12 + (Math.floor(y / 26) % 2) * 13; x < w; x += 26) {
+          ctx.beginPath(); ctx.arc(x, y, 6, 0, Math.PI * 2); ctx.fill();
+        }
+      }
+    },
+  },
+  {
+    css: 'repeating-linear-gradient(45deg,#FFD23F 0 9px,#fff 9px 18px)', // ทแยงเหลือง
+    paint(ctx, w, h) {
+      solid('#FFFFFF')(ctx, w, h);
+      ctx.fillStyle = '#FFD23F';
+      ctx.save();
+      ctx.translate(w / 2, h / 2);
+      ctx.rotate(Math.PI / 4);
+      const d = Math.hypot(w, h);
+      for (let x = -d; x < d; x += 56) ctx.fillRect(x, -d, 28, d * 2);
+      ctx.restore();
+    },
+  },
+  {
+    css: 'conic-gradient(#46C6FF 25%,#fff 0 50%,#46C6FF 0 75%,#fff 0) 0 0/22px 22px', // หมากรุกฟ้า
+    paint(ctx, w, h) {
+      solid('#FFFFFF')(ctx, w, h);
+      ctx.fillStyle = '#46C6FF';
+      const s = 34;
+      for (let y = 0; y < h; y += s) {
+        for (let x = (Math.floor(y / s) % 2) * s; x < w; x += s * 2) ctx.fillRect(x, y, s, s);
+      }
+    },
+  },
+];
 const SHAPES = [
   { id: 'square', th: 'เหลี่ยม', en: 'Square' },
   { id: 'rounded', th: 'มุมมน', en: 'Rounded' },
   { id: 'circle', th: 'วงกลม', en: 'Circle' },
 ];
 const STICKER_SET = ['⭐', '💖', '✨', '🔥', '🌈', '🐱', '🍓', '👑', '💬', '🎀'];
-const CELL_W = 480, CELL_H = 360, PAD = 28, GAP = 18, FOOTER = 56;
+const PAD = 28, GAP = 18, FOOTER = 56;
 
 /* ---------- state ---------- */
 let layout = null;
 let filter = 'none';
+let mode = 'manual';
+let shooting = false;    // กำลังนับถอยหลังอัตโนมัติอยู่ กันกดซ้อน
 let shots = [];          // canvas ต่อรูป (ฟิลเตอร์เผาลงพิกเซลแล้ว)
 let retakeIndex = null;  // ถ่ายซ่อมช่องไหน (null = ถ่ายเรียงตามปกติ)
-let frameColor = FRAME_COLORS[0];
+let cell = SIZES[0];
+let frame = FRAMES[0];
 let shape = 'square';
+let showDate = true;
 let stickers = [];       // { e, x, y } พิกัดสัดส่วน 0-1 ของผืน canvas
 let placing = null;      // อีโมจิที่กำลังจะวาง
 
 const cam = $('#cam');
 const preview = $('#preview');
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const show = (id) => ['layout-view', 'shoot-view', 'edit-view']
   .forEach((v) => $(`#${v}`).classList.toggle('hidden', v !== id));
+
+const pressGroup = (root, btn) =>
+  root.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
 
 /* ---------- เฟส 1: เลือก layout ---------- */
 LAYOUTS.forEach((L) => {
@@ -64,6 +144,19 @@ LAYOUTS.forEach((L) => {
 });
 
 /* ---------- เฟส 2: ถ่ายรูป ---------- */
+MODES.forEach((m, i) => {
+  const btn = document.createElement('button');
+  btn.className = 'btn btn-sm';
+  btn.textContent = t(m.th, m.en);
+  btn.setAttribute('aria-pressed', String(i === 0));
+  btn.addEventListener('click', () => {
+    mode = m.id;
+    pressGroup($('#shoot-mode'), btn);
+    $('#snap-btn').textContent = mode === 'timer' ? t('⏱ เริ่มถ่าย!', '⏱ Start!') : t('📷 ถ่ายเลย!', '📷 Snap!');
+  });
+  $('#shoot-mode').appendChild(btn);
+});
+
 const barF = $('#filters');
 FILTERS.forEach((f, i) => {
   const btn = document.createElement('button');
@@ -73,7 +166,7 @@ FILTERS.forEach((f, i) => {
   btn.addEventListener('click', () => {
     filter = f.css;
     cam.style.filter = filter === 'none' ? '' : filter;
-    barF.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+    pressGroup(barF, btn);
   });
   barF.appendChild(btn);
 });
@@ -85,8 +178,8 @@ function updateShootCount() {
     : t(`รูปที่ ${shots.length + 1}/${total}`, `Shot ${shots.length + 1}/${total}`);
 }
 
-$('#snap-btn').addEventListener('click', () => {
-  if (cam.readyState < 2) return; // กล้องยังไม่มีภาพเฟรมแรก กดไปก็ได้รูปว่าง
+// เก็บภาพจากกล้อง 1 รูป — คืนค่า true เมื่อครบชุดและพาไปหน้าแต่งรูปแล้ว
+function capture() {
   const c = document.createElement('canvas');
   c.width = cam.videoWidth || 1280;
   c.height = cam.videoHeight || 960;
@@ -113,12 +206,38 @@ $('#snap-btn').addEventListener('click', () => {
     renderThumbs();
     compose();
     show('edit-view');
-  } else {
-    updateShootCount();
+    return true;
   }
+  updateShootCount();
+  return false;
+}
+
+$('#snap-btn').addEventListener('click', async () => {
+  if (cam.readyState < 2 || shooting) return; // กล้องยังไม่มีเฟรมแรก หรือกำลังนับอยู่
+  if (mode === 'manual') { capture(); return; }
+
+  // โหมดนับถอยหลัง: กดครั้งเดียว วนถ่ายจนครบชุด (ถ้าถ่ายซ่อมก็นับรอบเดียว)
+  shooting = true;
+  $('#snap-btn').disabled = true;
+  const num = $('#count-num');
+  let done = false;
+  while (!done) {
+    for (let n = 3; n > 0; n--) {
+      num.textContent = n;
+      num.classList.remove('tick');
+      void num.offsetWidth;
+      num.classList.add('tick');
+      await sleep(1000);
+    }
+    num.textContent = '';
+    done = capture();
+    if (!done) await sleep(600); // เว้นจังหวะให้เปลี่ยนท่า
+  }
+  shooting = false;
+  $('#snap-btn').disabled = false;
 });
 
-$('#back-layout-btn').addEventListener('click', () => show('layout-view'));
+$('#back-layout-btn').addEventListener('click', () => { if (!shooting) show('layout-view'); });
 
 /* ---------- เปิดกล้อง ---------- */
 try {
@@ -138,34 +257,41 @@ try {
 }
 
 /* ---------- เฟส 3: ประกอบภาพ ---------- */
+// วาดแบบ cover-crop: ตัดขอบต้นฉบับให้สัดส่วนตรงช่องก่อนวาด ภาพไม่ถูกบีบ/ยืดเด็ดขาด
+function drawCover(ctx, s, x, y, w, h) {
+  const sr = s.width / s.height, dr = w / h;
+  let sw = s.width, sh = s.height, sx = 0, sy = 0;
+  if (sr > dr) { sw = s.height * dr; sx = (s.width - sw) / 2; }
+  else { sh = s.width / dr; sy = (s.height - sh) / 2; }
+  ctx.drawImage(s, sx, sy, sw, sh, x, y, w, h);
+}
+
 function compose() {
   const { cols, rows } = layout;
-  preview.width = PAD * 2 + cols * CELL_W + (cols - 1) * GAP;
-  preview.height = PAD * 2 + rows * CELL_H + (rows - 1) * GAP + FOOTER;
+  const footer = showDate ? FOOTER : 0;
+  preview.width = PAD * 2 + cols * cell.w + (cols - 1) * GAP;
+  preview.height = PAD * 2 + rows * cell.h + (rows - 1) * GAP + footer;
   const ctx = preview.getContext('2d');
 
-  ctx.fillStyle = frameColor;
-  ctx.fillRect(0, 0, preview.width, preview.height);
+  frame.paint(ctx, preview.width, preview.height);
 
   shots.forEach((s, i) => {
-    const x = PAD + (i % cols) * (CELL_W + GAP);
-    const y = PAD + Math.floor(i / cols) * (CELL_H + GAP);
+    const x = PAD + (i % cols) * (cell.w + GAP);
+    const y = PAD + Math.floor(i / cols) * (cell.h + GAP);
     ctx.save();
     if (shape === 'circle') {
-      // วงกลม: ตัดกลางภาพเป็นสี่เหลี่ยมจัตุรัสก่อน แล้ว clip เป็นวงกลมกลางช่อง
+      const r = Math.min(cell.w, cell.h) / 2;
       ctx.beginPath();
-      ctx.arc(x + CELL_W / 2, y + CELL_H / 2, CELL_H / 2, 0, Math.PI * 2);
+      ctx.arc(x + cell.w / 2, y + cell.h / 2, r, 0, Math.PI * 2);
       ctx.clip();
-      const side = Math.min(s.width, s.height);
-      ctx.drawImage(s, (s.width - side) / 2, (s.height - side) / 2, side, side,
-        x + (CELL_W - CELL_H) / 2, y, CELL_H, CELL_H);
+      drawCover(ctx, s, x + cell.w / 2 - r, y + cell.h / 2 - r, r * 2, r * 2);
     } else {
       if (shape === 'rounded') {
         ctx.beginPath();
-        ctx.roundRect(x, y, CELL_W, CELL_H, 26); // ponytail: roundRect ต้องเบราว์เซอร์ปี 2022+ เท่านั้น
+        ctx.roundRect(x, y, cell.w, cell.h, 26); // ponytail: roundRect ต้องเบราว์เซอร์ปี 2022+ เท่านั้น
         ctx.clip();
       }
-      ctx.drawImage(s, x, y, CELL_W, CELL_H);
+      drawCover(ctx, s, x, y, cell.w, cell.h);
     }
     ctx.restore();
   });
@@ -176,14 +302,15 @@ function compose() {
   ctx.textBaseline = 'middle';
   stickers.forEach((st) => ctx.fillText(st.e, st.x * preview.width, st.y * preview.height));
 
-  // วันที่ท้ายแถบ แบบตู้สติกเกอร์
-  const dark = frameColor === '#17142B' || frameColor === '#6C4DF6';
-  ctx.fillStyle = dark ? 'rgba(255,255,255,.85)' : 'rgba(23,20,43,.65)';
-  ctx.font = '600 26px "IBM Plex Mono", monospace';
-  ctx.fillText(
-    `✦ photobooth · ${new Date().toLocaleDateString(lang === 'en' ? 'en-GB' : 'th-TH', { day: 'numeric', month: 'short', year: 'numeric' })} ✦`,
-    preview.width / 2, preview.height - FOOTER / 2 - PAD / 2,
-  );
+  // วันที่ท้ายแถบ แบบตู้สติกเกอร์ (ปิดได้)
+  if (showDate) {
+    ctx.fillStyle = frame.dark ? 'rgba(255,255,255,.85)' : 'rgba(23,20,43,.65)';
+    ctx.font = '600 26px "IBM Plex Mono", monospace';
+    ctx.fillText(
+      `✦ photobooth · ${new Date().toLocaleDateString(lang === 'en' ? 'en-GB' : 'th-TH', { day: 'numeric', month: 'short', year: 'numeric' })} ✦`,
+      preview.width / 2, preview.height - footer / 2 - PAD / 2,
+    );
+  }
 
   $('#save-btn').href = preview.toDataURL('image/png');
 }
@@ -208,17 +335,27 @@ function renderThumbs() {
 }
 
 /* ---------- ตัวเลือกแต่งรูป ---------- */
-const pressGroup = (root, btn) =>
-  root.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
-
-FRAME_COLORS.forEach((c, i) => {
+SIZES.forEach((s, i) => {
   const btn = document.createElement('button');
-  btn.className = 'btn btn-sm swatch';
-  btn.style.background = c;
-  btn.setAttribute('aria-label', c);
+  btn.className = 'btn btn-sm';
+  btn.textContent = t(s.th, s.en);
   btn.setAttribute('aria-pressed', String(i === 0));
   btn.addEventListener('click', () => {
-    frameColor = c;
+    cell = s;
+    pressGroup($('#sizes'), btn);
+    compose();
+  });
+  $('#sizes').appendChild(btn);
+});
+
+FRAMES.forEach((f, i) => {
+  const btn = document.createElement('button');
+  btn.className = 'btn btn-sm swatch';
+  btn.style.background = f.css;
+  btn.setAttribute('aria-label', t(`กรอบแบบที่ ${i + 1}`, `Frame ${i + 1}`));
+  btn.setAttribute('aria-pressed', String(i === 0));
+  btn.addEventListener('click', () => {
+    frame = f;
     pressGroup($('#frame-colors'), btn);
     compose();
   });
@@ -263,6 +400,11 @@ preview.addEventListener('click', (ev) => {
     if (hit === -1) return;
     stickers.splice(hit, 1);
   }
+  compose();
+});
+
+$('#date-toggle').addEventListener('change', (e) => {
+  showDate = e.target.checked;
   compose();
 });
 
