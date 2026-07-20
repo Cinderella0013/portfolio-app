@@ -15,6 +15,7 @@
 
 *{ box-sizing:border-box; margin:0; padding:0; }
 html{ scroll-behavior:smooth; }
+html, body{ overflow-x:clip; } /* กันของตกแต่งที่ยื่นออกนอกจอทำให้เกิดแถบเลื่อนแนวนอน */
 body{
   font-family:var(--body); background:var(--paper); color:var(--ink); line-height:1.7;
   background-image:linear-gradient(rgba(23,20,43,.05) 1px,transparent 1px),
@@ -22,6 +23,7 @@ body{
   background-size:28px 28px;
 }
 a{ color:inherit; }
+img{ max-width:100%; height:auto; }
 :focus-visible{ outline:3px solid var(--pink); outline-offset:3px; }
 .wrap{ width:min(1080px,92vw); margin-inline:auto; }
 .hidden{ display:none !important; }
@@ -173,6 +175,18 @@ a{ color:inherit; }
 .link-item .dest{ display:block; font-size:.72rem; opacity:.65; word-break:break-all; margin:.15rem 0 .4rem; }
 .link-item .link-meta{ display:flex; gap:.4rem; align-items:center; flex-wrap:wrap; }
 .link-item .clicks{ font-family:var(--mono); font-size:.72rem; opacity:.7; margin-left:auto; }
+
+/* ---------- อนิเมชั่นหลังบ้าน ---------- */
+.login-box{ animation:pop-in .4s cubic-bezier(.2,.9,.3,1.3) backwards; }
+@keyframes pop-in{ from{ opacity:0; transform:scale(.92) translateY(14px); } }
+.panel-view:not(.hidden){ animation:panel-in .3s ease; }
+@keyframes panel-in{ from{ opacity:0; transform:translateY(10px); } }
+.row, .link-item{ animation:row-in .35s ease backwards; }
+.row:nth-child(2), .link-item:nth-child(2){ animation-delay:.05s; }
+.row:nth-child(3), .link-item:nth-child(3){ animation-delay:.1s; }
+.row:nth-child(4), .link-item:nth-child(4){ animation-delay:.15s; }
+.row:nth-child(n+5), .link-item:nth-child(n+5){ animation-delay:.2s; }
+@keyframes row-in{ from{ opacity:0; transform:translateX(-12px); } }
 
 /* ---------- REVEAL ---------- */
 .reveal{ opacity:0; transform:translateY(22px); transition:opacity .5s ease, transform .5s ease; }

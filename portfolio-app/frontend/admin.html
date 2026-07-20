@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/themes.css"><!-- เอาเอฟเฟกต์ปุ่ม (กดยุบ/แสงกวาด) มาใช้กับหลังบ้านด้วย -->
 </head>
 <body>
 
@@ -76,11 +77,16 @@
         <div class="grid-2">
           <div class="field"><label for="p-fullName">ชื่อ-นามสกุล</label><input id="p-fullName" name="fullName" required></div>
           <div class="field"><label for="p-headline">ตำแหน่ง / คำโปรย</label><input id="p-headline" name="headline" required></div>
+          <div class="field"><label for="p-headlineEn">ตำแหน่ง / คำโปรย (English)</label><input id="p-headlineEn" name="headlineEn" placeholder="แสดงเมื่อผู้ชมเลือกภาษา EN"></div>
         </div>
         <div class="field">
           <label for="p-bio">แนะนำตัว</label>
           <textarea id="p-bio" name="bio"></textarea>
           <p class="hint">เว้นบรรทัดว่าง 1 บรรทัดเพื่อขึ้นย่อหน้าใหม่</p>
+        </div>
+        <div class="field">
+          <label for="p-bioEn">แนะนำตัว (English)</label>
+          <textarea id="p-bioEn" name="bioEn" placeholder="เว้นว่างได้ ถ้าว่างหน้า EN จะแสดงข้อความไทย"></textarea>
         </div>
         <div class="grid-2">
           <div class="field"><label for="p-location">ที่อยู่</label><input id="p-location" name="location"></div>
@@ -164,6 +170,7 @@
           <div class="field"><label for="pr-coverEmoji">สัญลักษณ์บนการ์ด</label><input id="pr-coverEmoji" name="coverEmoji" value="{ }" maxlength="8"></div>
         </div>
         <div class="field"><label for="pr-summary">คำอธิบายสั้น</label><input id="pr-summary" name="summary" required maxlength="300"></div>
+        <div class="field"><label for="pr-summaryEn">คำอธิบายสั้น (English)</label><input id="pr-summaryEn" name="summaryEn" maxlength="300" placeholder="เว้นว่างได้ ถ้าว่างหน้า EN จะแสดงข้อความไทย"></div>
         <div class="field"><label for="pr-description">รายละเอียดเต็ม</label><textarea id="pr-description" name="description"></textarea></div>
         <div class="grid-2">
           <div class="field"><label for="pr-tags">แท็ก</label><input id="pr-tags" name="tags"><p class="hint">คั่นด้วยจุลภาค เช่น React, Node.js</p></div>

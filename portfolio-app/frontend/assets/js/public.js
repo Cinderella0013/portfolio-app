@@ -11,11 +11,11 @@ const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 function renderProfile(p) {
   document.title = `${p.fullName} — Portfolio`;
   $('#hero-name').textContent = p.fullName;
-  $('#hero-headline').textContent = p.headline;
+  $('#hero-headline').textContent = t(p.headline, p.headlineEn || p.headline);
   $('#nav-logo').textContent = '~/' + p.fullName.split(/\s+/)[0].toLowerCase();
   $('#footer-name').textContent = `© ${new Date().getFullYear()} ${p.fullName}`;
 
-  $('#about-bio').innerHTML = (p.bio || '')
+  $('#about-bio').innerHTML = t(p.bio || '', p.bioEn || p.bio || '')
     .split(/\n{2,}/).filter(Boolean)
     .map((para) => `<p>${esc(para)}</p>`).join('') || `<p>${t('ยังไม่ได้กรอกข้อมูลแนะนำตัว', 'No bio yet')}</p>`;
 
@@ -34,7 +34,7 @@ function renderProfile(p) {
   typeTerminal([
     '<span class="term-prompt">$</span> whoami',
     `<span class="term-key">name</span>:  ${esc(p.fullName)}`,
-    `<span class="term-key">role</span>:  ${esc(p.headline)}`,
+    `<span class="term-key">role</span>:  ${esc(t(p.headline, p.headlineEn || p.headline))}`,
     p.location ? `<span class="term-key">base</span>:  ${esc(p.location)}` : null,
     '<span class="term-prompt">$</span> <span class="caret"></span>',
   ].filter(Boolean));
@@ -86,7 +86,7 @@ const renderProjects = (projects) => {
         <div class="card-top">${esc(p.coverEmoji)}</div>
         <div class="card-body">
           <h3>${esc(p.title)}</h3>
-          <p>${esc(p.summary)}</p>
+          <p>${esc(t(p.summary, p.summaryEn || p.summary))}</p>
           <div class="tags">${(p.tags || []).map((t) => `<span class="tag">${esc(t)}</span>`).join('')}</div>
           <div>
             ${p.liveUrl ? `<a class="card-link" href="${esc(p.liveUrl)}" target="_blank" rel="noopener">${t('เปิดดู', 'Live')} →</a>` : ''}

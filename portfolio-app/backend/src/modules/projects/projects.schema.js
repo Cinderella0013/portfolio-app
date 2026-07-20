@@ -4,6 +4,7 @@ export const projectSchema = z.object({
   title: z.string().min(1, 'กรุณากรอกชื่อโปรเจกต์').max(160),
   slug: z.string().regex(/^[a-z0-9-]+$/, 'slug ใช้ได้เฉพาะ a-z, 0-9 และขีดกลาง').max(80).optional(),
   summary: z.string().min(1, 'กรุณากรอกคำอธิบายสั้น').max(300),
+  summaryEn: z.string().max(300).nullish(),
   description: z.string().max(8000).nullish(),
   coverEmoji: z.string().max(8).default('{ }'),
   tags: z.array(z.string().max(30)).max(12).default([]),

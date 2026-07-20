@@ -28,7 +28,9 @@ model Profile {
   id          String   @id @default("main") @map("_id")
   fullName    String
   headline    String
+  headlineEn  String?  // คำโปรยภาษาอังกฤษ แสดงเมื่อผู้ชมเลือกภาษา EN
   bio         String
+  bioEn       String?
   location    String?
   email       String?
   phone       String?
@@ -80,6 +82,7 @@ model Project {
   slug        String   @unique
   title       String
   summary     String
+  summaryEn   String?  // คำอธิบายอังกฤษ แสดงเมื่อเลือกภาษา EN
   description String?
   coverEmoji  String   @default("{ }")
   tags        String[] @default([])
