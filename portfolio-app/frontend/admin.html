@@ -42,7 +42,23 @@
     </div>
   </nav>
 
-  <main class="admin-shell wrap">
+  <div class="admin-layout wrap">
+  <!-- แผงย่อลิงก์ — วางลิงก์ยาว ได้ลิงก์สั้นพร้อมใช้ เก็บข้อมูลใน Google Sheets -->
+  <aside class="links-side">
+    <h3>🔗 ย่อลิงก์</h3>
+    <form id="link-form" novalidate>
+      <div class="field">
+        <input id="lk-url" name="url" type="url" placeholder="วางลิงก์ยาวที่นี่…" required>
+      </div>
+      <div class="field">
+        <input id="lk-code" name="code" placeholder="ตั้งชื่อสั้นเอง (เว้นได้)" pattern="[a-zA-Z0-9_-]{3,30}">
+      </div>
+      <button class="btn btn-sm btn-primary" type="submit">ย่อลิงก์</button>
+    </form>
+    <div class="links-list" id="links-list"></div>
+  </aside>
+
+  <main class="admin-shell">
     <div class="alert hidden" id="admin-alert"></div>
 
     <div class="tabs" role="tablist">
@@ -171,6 +187,7 @@
       <div class="row-list" id="messages-rows"></div>
     </section>
   </main>
+  </div>
 </div>
 
 <script type="module" src="assets/js/admin.js"></script>

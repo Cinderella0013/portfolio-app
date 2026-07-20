@@ -9,6 +9,10 @@ const schema = z.object({
   JWT_SECRET: z.string().min(24, 'JWT_SECRET ต้องยาวอย่างน้อย 24 ตัวอักษร'),
   JWT_EXPIRES_IN: z.string().default('2h'), // token แอดมินอายุสั้น ถูกขโมยก็ใช้ได้ไม่นาน
   CORS_ORIGINS: z.string().default(''),
+  // Google Sheets สำหรับระบบย่อลิงก์ — ไม่ตั้งก็ได้ ฟีเจอร์นั้นจะปิดตัวเอง
+  GOOGLE_SA_EMAIL: z.string().optional(),
+  GOOGLE_SA_KEY: z.string().optional(),
+  SHEETS_ID: z.string().optional(),
 });
 
 const parsed = schema.safeParse(process.env);

@@ -7,6 +7,7 @@ import skillsRoutes from './modules/skills/skills.routes.js';
 import experiencesRoutes from './modules/experiences/experiences.routes.js';
 import projectsRoutes from './modules/projects/projects.routes.js';
 import messagesRoutes from './modules/messages/messages.routes.js';
+import linksRoutes from './modules/links/links.routes.js';
 
 const router = Router();
 
@@ -27,5 +28,6 @@ router.use('/skills', skillsRoutes);
 router.use('/experiences', experiencesRoutes);
 router.use('/projects', projectsRoutes);
 router.use('/messages', messagesRoutes);
+router.use('/links', linksRoutes);
 
 export default router;

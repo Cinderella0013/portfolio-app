@@ -6,6 +6,7 @@ import compression from 'compression';
 import morgan from 'morgan';
 import { env } from './config/env.js';
 import routes from './routes.js';
+import { redirectHandler } from './modules/links/links.routes.js';
 import { notFound, errorHandler } from './middlewares/error.js';
 
 export const createApp = () => {
@@ -35,6 +36,7 @@ export const createApp = () => {
   }
 
   app.use('/api', routes);
+  app.get('/s/:code', redirectHandler); // ลิงก์ย่อสาธารณะ เช่น /s/abc123
 
   app.use(notFound);
   app.use(errorHandler);

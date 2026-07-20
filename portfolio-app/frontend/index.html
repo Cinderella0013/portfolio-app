@@ -7,8 +7,9 @@
 <meta name="description" content="พอร์ตโฟลิโอนักพัฒนา">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&family=Mali:wght@400;600&family=Chonburi&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/themes.css">
 </head>
 <body>
 
@@ -24,7 +25,7 @@
   </div>
 </nav>
 
-<header class="hero wrap" id="top">
+<header class="hero wrap theme-y2k" id="top">
   <div class="hero-grid">
     <div>
       <span class="hero-hi">ยินดีที่ได้รู้จักครับ 👋</span>
@@ -47,7 +48,11 @@
   </div>
 </header>
 
-<section class="section wrap reveal" id="about">
+<div class="y2k-marquee" aria-hidden="true">
+  <span>★ WELCOME TO MY WORLD ★ Y2K × RETRO × CYBERPUNK × HAND-DRAWN ★ ลองพิมพ์ ↑↑↓↓←→←→BA ดูสิ ★ WELCOME TO MY WORLD ★</span>
+</div>
+
+<section class="section wrap reveal theme-hand" id="about">
   <p class="eyebrow">// 01 — เกี่ยวกับฉัน</p>
   <h2>เขียนโค้ดเพราะชอบเห็นของที่<mark>คนใช้แล้วไม่ต้องถาม</mark></h2>
   <div class="about-grid">
@@ -59,13 +64,13 @@
   </div>
 </section>
 
-<section class="section wrap reveal" id="work">
+<section class="section wrap reveal theme-retro" id="work">
   <p class="eyebrow">// 02 — ประวัติการทำงานและการศึกษา</p>
   <h2>เส้นทางที่<mark>พาผมมาถึงตรงนี้</mark></h2>
   <div class="timeline" id="timeline"></div>
 </section>
 
-<section class="section wrap reveal" id="projects">
+<section class="section wrap reveal theme-cyber" id="projects">
   <p class="eyebrow">// 03 — ผลงาน</p>
   <h2>ของที่<mark>ทำเสร็จแล้ว</mark> และมีคนใช้จริง</h2>
   <div class="proj-grid" id="projects-grid"></div>
@@ -111,5 +116,6 @@
 </footer>
 
 <script type="module" src="assets/js/public.js"></script>
+<script type="module" src="assets/js/fx.js"></script>
 </body>
 </html>

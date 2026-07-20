@@ -1,0 +1,118 @@
+/* ============================================================
+   ธีมประจำ section — แต่ละส่วนของหน้ามีสไตล์ของตัวเอง
+   hero = Y2K · about = Hand-Drawn · work = Retro 70s · projects = Cyberpunk
+   เคล็ดลับพื้นเต็มจอ: box-shadow + clip-path ขยายพื้นหลังออกนอก .wrap
+   ============================================================ */
+
+/* ---------- Y2K (hero) ---------- */
+.theme-y2k{
+  background:linear-gradient(135deg,#ffd6f5 0%,#d1e8ff 45%,#e8d6ff 100%);
+  box-shadow:0 0 0 100vmax #ffd6f5; clip-path:inset(0 -100vmax);
+  background-clip:padding-box;
+  position:relative;
+}
+.theme-y2k::before{ /* ประกายดาวลอยประดับฉาก */
+  content:'✦'; position:absolute; top:1.2rem; right:8%; font-size:2rem; color:#fff;
+  text-shadow:0 0 12px #ff8ad4; animation:y2k-twinkle 2.4s ease-in-out infinite;
+}
+@keyframes y2k-twinkle{ 50%{ opacity:.25; transform:scale(.7) rotate(20deg); } }
+.theme-y2k h1{
+  background:linear-gradient(180deg,#8ec5ff 0%,#f7f7ff 38%,#6f86ff 52%,#ffe3fb 65%,#c48aff 100%);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  filter:drop-shadow(2px 2px 0 rgba(23,20,43,.9));
+}
+.theme-y2k h1 em{ background:none; }
+.theme-y2k .hero-hi{ background:#fff; border-radius:99px; }
+.y2k-sparkle{ /* ดาวที่วิ่งตามเมาส์ สร้างโดย fx.js */
+  position:fixed; pointer-events:none; z-index:99; font-size:.9rem; color:#ff4d8d;
+  text-shadow:0 0 6px #fff; animation:sparkle-fall .7s ease-out forwards;
+}
+@keyframes sparkle-fall{ to{ opacity:0; transform:translateY(26px) rotate(180deg) scale(.3); } }
+.y2k-marquee{
+  border-block:var(--border); background:#17142B; color:#7CFCE0;
+  font-family:var(--mono); font-size:.82rem; padding:.35rem 0;
+  overflow:hidden; white-space:nowrap;
+}
+.y2k-marquee span{ display:inline-block; padding-left:100vw; animation:marquee 22s linear infinite; }
+@keyframes marquee{ to{ transform:translateX(-100%); } }
+
+/* ---------- Hand-Drawn (about) ---------- */
+.theme-hand{ font-family:'Mali', var(--body); }
+.theme-hand h2, .theme-hand h3{ font-family:'Mali', var(--display); }
+.theme-hand h2 mark{
+  background:none;
+  background-image:linear-gradient(104deg, rgba(255,210,63,0) 1%, #FFD23F 2.5%, rgba(255,210,63,.6) 95%, rgba(255,210,63,0) 98%);
+  padding:.3em .2em; border-radius:.3em;
+}
+.theme-hand .panel{
+  /* border-radius เบี้ยวๆ สูตรคลาสสิกให้เส้นดูวาดมือ */
+  border-radius:255px 15px 225px 15px / 15px 225px 15px 255px;
+  border-style:solid; transform:rotate(-.6deg);
+  background:#FFFDF5;
+}
+.theme-hand .sticker{ border-radius:12px 4px 14px 5px / 5px 13px 6px 14px; }
+.theme-hand .sticker:hover{ animation:hand-wiggle .35s ease-in-out; }
+@keyframes hand-wiggle{ 25%{ transform:rotate(3deg); } 75%{ transform:rotate(-3deg); } }
+.theme-hand .about-text{ position:relative; }
+.theme-hand .about-text::after{ /* เส้นขีดเขียนใต้ย่อหน้า */
+  content:'～～～～～'; display:block; color:#6C4DF6; letter-spacing:.3em; opacity:.5;
+}
+
+/* ---------- Retro 70s (work) ---------- */
+.theme-retro{
+  background:#F6EBD9; box-shadow:0 0 0 100vmax #F6EBD9; clip-path:inset(0 -100vmax);
+  border-block:6px solid #B4532A;
+  position:relative;
+}
+.theme-retro::before{ /* แถบสีธง 70s พาดบนสุด */
+  content:''; position:absolute; top:0; left:-100vmax; right:-100vmax; height:14px;
+  background:repeating-linear-gradient(90deg,#B4532A 0 60px,#E09F3E 60px 120px,#7A8450 120px 180px,#54442B 180px 240px);
+}
+.theme-retro h2{ font-family:'Chonburi', var(--display); color:#54442B; }
+.theme-retro h2 mark{ background:#E09F3E; }
+.theme-retro .eyebrow{ color:#B4532A; }
+.theme-retro .timeline::before{ background:#B4532A; }
+.theme-retro .tl-item::before{ background:#E09F3E; border-color:#54442B; }
+.theme-retro .tl-item.is-edu::before{ background:#7A8450; }
+.theme-retro .tl-date{ color:#B4532A; }
+.theme-retro .tl-item h3{ color:#54442B; }
+
+/* ---------- Cyberpunk (projects) ---------- */
+.theme-cyber{
+  background:#0B0E1A; box-shadow:0 0 0 100vmax #0B0E1A; clip-path:inset(0 -100vmax);
+  color:#D6F6FF; position:relative;
+}
+.theme-cyber::after{ /* เส้น scanline แบบจอ CRT */
+  content:''; position:absolute; inset:0; left:-100vmax; right:-100vmax; pointer-events:none;
+  background:repeating-linear-gradient(0deg, rgba(0,255,240,.04) 0 1px, transparent 1px 3px);
+}
+.theme-cyber .eyebrow{ color:#00FFF0; text-shadow:0 0 8px rgba(0,255,240,.7); }
+.theme-cyber h2{ color:#fff; }
+.theme-cyber h2 mark{ background:none; color:#FF2ECC; text-shadow:0 0 10px rgba(255,46,204,.8); }
+.theme-cyber .card{
+  background:#121729; border-color:#00FFF0; box-shadow:5px 5px 0 rgba(0,255,240,.35);
+  color:#D6F6FF;
+}
+.theme-cyber .card:hover{ box-shadow:0 0 22px rgba(255,46,204,.55), 8px 8px 0 rgba(0,255,240,.35); }
+.theme-cyber .card-top{ border-color:#00FFF0; }
+.theme-cyber .card:nth-child(3n+1) .card-top{ background:#1A2340; color:#00FFF0; }
+.theme-cyber .card:nth-child(3n+2) .card-top{ background:#2B1038; color:#FF2ECC; }
+.theme-cyber .card:nth-child(3n+3) .card-top{ background:#0F2B2B; color:#7CFCE0; }
+.theme-cyber .card-body h3{ color:#fff; }
+.theme-cyber .tag{ border-color:#00FFF0; color:#00FFF0; }
+.theme-cyber .card-link{ color:#FF2ECC; border-bottom-color:#FF2ECC; }
+.theme-cyber .card-link:hover{ border-bottom-color:#00FFF0; }
+/* ตัวอักษร glitch ตอน hover หัวข้อ (fx.js ใส่ data-text ให้) */
+.theme-cyber h2:hover{ animation:glitch .32s steps(2) infinite; }
+@keyframes glitch{
+  25%{ transform:translate(2px,-1px); text-shadow:-3px 0 #FF2ECC, 3px 0 #00FFF0; }
+  75%{ transform:translate(-2px,1px); text-shadow:3px 0 #FF2ECC, -3px 0 #00FFF0; }
+}
+
+/* ---------- ลูกเล่นพิเศษ: โหมดปาร์ตี้จากรหัส Konami (fx.js) ---------- */
+body.party{ animation:party-hue 3s linear infinite; }
+@keyframes party-hue{ to{ filter:hue-rotate(360deg); } }
+
+@media (prefers-reduced-motion:reduce){
+  .y2k-marquee span{ animation:none; padding-left:0; }
+}

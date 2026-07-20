@@ -80,6 +80,11 @@ export const api = {
     update: (id, d) => request(`/projects/${id}`, { method: 'PATCH', body: d, auth: true }),
     remove: (id) => request(`/projects/${id}`, { method: 'DELETE', auth: true }),
   },
+  links: {
+    list: () => request('/links', { auth: true }),
+    create: (d) => request('/links', { method: 'POST', body: d, auth: true }),
+    remove: (code) => request(`/links/${code}`, { method: 'DELETE', auth: true }),
+  },
   messages: {
     send: (d) => request('/messages', { method: 'POST', body: d }),
     list: () => request('/messages', { auth: true }),

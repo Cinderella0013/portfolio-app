@@ -253,6 +253,57 @@ messagesRows.addEventListener('click', (e) => {
   }
 });
 
+/* ============ ย่อลิงก์ (เก็บใน Google Sheets) ============ */
+const linkForm = $('#link-form');
+const linksList = $('#links-list');
+const shortUrl = (code) => `${location.origin}/s/${code}`;
+
+const loadLinks = async () => {
+  try {
+    const items = await api.links.list();
+    linksList.innerHTML = items.length
+      ? items.map((l) => `
+        <div class="link-item">
+          <span class="short">/s/${esc(l.code)}</span>
+          <span class="dest">${esc(l.url)}</span>
+          <div class="link-meta">
+            <button class="btn btn-sm" data-copy="${esc(shortUrl(l.code))}">คัดลอก</button>
+            <button class="btn btn-sm btn-danger" data-del="${esc(l.code)}">ลบ</button>
+            <span class="clicks">${l.clicks} คลิก</span>
+          </div>
+        </div>`).join('')
+      : '<p class="empty">ยังไม่มีลิงก์</p>';
+  } catch (err) {
+    // ยังไม่ได้ตั้งค่า Sheets — บอกในแผงเลย ไม่ต้องเด้ง alert รวม
+    linksList.innerHTML = `<p class="empty">${esc(err.message)}</p>`;
+  }
+};
+
+linkForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  handle(async () => {
+    const { code } = await api.links.create(readForm(linkForm));
+    linkForm.reset();
+    await loadLinks();
+    await navigator.clipboard.writeText(shortUrl(code)).catch(() => {});
+    toast(`ย่อแล้ว: /s/${code} — คัดลอกให้แล้ว`);
+  });
+});
+
+linksList.addEventListener('click', (e) => {
+  const copy = e.target.closest('[data-copy]');
+  if (copy) {
+    navigator.clipboard.writeText(copy.dataset.copy);
+    copy.textContent = 'คัดลอกแล้ว!';
+    setTimeout(() => { copy.textContent = 'คัดลอก'; }, 1200);
+  }
+  const del = e.target.closest('[data-del]');
+  if (del) {
+    if (!confirm('ลบลิงก์นี้ถาวร ยืนยันหรือไม่')) return;
+    handle(async () => { await api.links.remove(del.dataset.del); await loadLinks(); }, 'ลบลิงก์แล้ว');
+  }
+});
+
 /* ============ เริ่มทำงาน ============ */
 function loadAll() {
   loadProfile();
@@ -260,6 +311,7 @@ function loadAll() {
   experiencesCrud.load();
   projectsCrud.load();
   loadMessages();
+  loadLinks();
 }
 
 (async function init() {
