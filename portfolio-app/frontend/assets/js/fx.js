@@ -18,8 +18,9 @@ if (!reduced) {
   });
 }
 
-/* ---------- แถบบอกตำแหน่งเลื่อนหน้า ---------- */
-if (!reduced) {
+/* ---------- แถบบอกตำแหน่งเลื่อนหน้า ----------
+   ไม่ปิดในโหมดลดการเคลื่อนไหว: มันขยับตามมือผู้ใช้เอง ไม่ใช่ของวิ่งเอง */
+{
   const bar = document.createElement('div');
   bar.id = 'scroll-progress';
   document.body.appendChild(bar);

@@ -140,7 +140,6 @@ function bindReveal() {
 /* ---------- เริ่มทำงาน ---------- */
 (async function init() {
   bindContactForm();
-  bindReveal();
 
   // โหลดพร้อมกันทั้งหมด ส่วนไหนพังก็ไม่ลากส่วนอื่นล้มตาม
   const [profile, skills, experiences, projects] = await Promise.allSettled([
@@ -153,4 +152,8 @@ function bindReveal() {
   if (skills.status === 'fulfilled') renderSkills(skills.value);
   if (experiences.status === 'fulfilled') renderTimeline(experiences.value);
   if (projects.status === 'fulfilled') renderProjects(projects.value);
+
+  // ผูก reveal หลังวาดเนื้อหาแล้วเท่านั้น — ถ้าผูกก่อน section ที่อยู่ในจอ
+  // จะถูกนับว่า "เห็นแล้ว" ตั้งแต่ยังว่าง ของที่มาทีหลังเลยโผล่ทันทีไม่ทยอยไหล
+  bindReveal();
 })();

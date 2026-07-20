@@ -126,7 +126,7 @@ body.party{ animation:party-hue 3s linear infinite; }
 /* hero ไหลเข้าตอนโหลดหน้า */
 .hero-grid > div{ animation:rise-in .7s cubic-bezier(.2,.9,.3,1.2) backwards; }
 .hero-grid > div:last-child{ animation-delay:.18s; }
-@keyframes rise-in{ from{ opacity:0; transform:translateY(28px); } }
+@keyframes rise-in{ from{ opacity:0; transform:translateY(var(--slide,28px)); } }
 
 /* ปุ่ม: กดแล้วยุบ + แสงกวาดผ่านตอน hover */
 .btn{ position:relative; overflow:hidden; }
@@ -149,7 +149,7 @@ body.party{ animation:party-hue 3s linear infinite; }
 
 /* ของในแต่ละ section ทยอยโผล่ทีละชิ้นตอนเลื่อนถึง */
 .reveal .sticker, .reveal .tl-item, .reveal .card{
-  opacity:0; transform:translateY(16px);
+  opacity:0; transform:translateY(var(--slide,16px));
   transition:opacity .45s ease, transform .45s ease;
 }
 .reveal.shown .sticker, .reveal.shown .tl-item, .reveal.shown .card{ opacity:1; transform:none; }
@@ -166,7 +166,11 @@ body.party{ animation:party-hue 3s linear infinite; }
 .y2k-marquee:hover span{ animation-play-state:paused; }
 
 @media (prefers-reduced-motion:reduce){
+  /* ปิดเฉพาะของที่เคลื่อนไหวต่อเนื่องหรือวนซ้ำ — fade เข้าครั้งเดียวยังทำงาน */
   .y2k-marquee span{ animation:none; padding-left:0; }
-  #scroll-progress{ display:none; }
-  .reveal .sticker, .reveal .tl-item, .reveal .card{ opacity:1; transform:none; }
+  .theme-y2k::before{ animation:none; }
+  .theme-cyber h2:hover{ animation:none; }
+  .theme-hand .sticker:hover{ animation:none; }
+  .btn:hover::after{ animation:none; }
+  body.party{ animation:none; }
 }
