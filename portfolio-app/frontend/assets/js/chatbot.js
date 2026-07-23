@@ -1,11 +1,29 @@
 // แชทบอทลอย — icon กดแล้วเด้งหน้าต่าง คุยผ่าน /api/chat (key อยู่ฝั่ง server)
-// ประวัติแชทเก็บใน localStorage และหมดอายุ 1 ชั่วโมงหลังเริ่มคุย
+// ประวัติแชทเก็บใน localStorage รีเซ็ตเมื่อเงียบครบ 20 นาที
 import { api, ApiClientError } from './api.js';
 import { esc } from './dom.js';
 import { t } from './i18n.js';
 
 const STORE = 'portfolio.chat';
 const IDLE = 20 * 60 * 1000; // เงียบครบ 20 นาที (ไม่มีการถามต่อ) ให้รีเซ็ต
+
+// สุ่มชวนคุย: ทุก 5 นาทีที่เปิดหน้าไว้ มีโอกาส 1/20 เด้งคำถามเล่นๆ ขึ้นมา
+const PROACTIVE_EVERY = 5 * 60 * 1000;
+const PROACTIVE_CHANCE = 1 / 20;
+const ICEBREAKERS = [
+  ['ถ้ามีพลังพิเศษได้ 1 อย่าง อยากได้อะไร?', 'If you could have one superpower, what would it be?'],
+  ['ชา หรือ กาแฟ?', 'Tea or coffee?'],
+  ['ถ้าไปเที่ยวได้ทุกที่ตอนนี้ จะไปไหน?', 'If you could teleport anywhere right now, where to?'],
+  ['เพลงที่ฟังวนล่าสุดคือเพลงอะไร?', "What's the last song you had on repeat?"],
+  ['หมา หรือ แมว?', 'Dogs or cats?'],
+  ['ของกินที่กินได้ทุกวันไม่มีเบื่อคืออะไร?', "What food could you eat every day and never get tired of?"],
+  ['กลางวัน หรือ กลางคืน?', 'Are you a morning person or a night owl?'],
+  ['ถ้าเลี้ยงไดโนเสาร์เป็นสัตว์เลี้ยงได้ จะเลือกตัวไหน?', 'If you could keep a dinosaur as a pet, which one?'],
+  ['ทะเล หรือ ภูเขา?', 'Beach or mountains?'],
+  ['superpower อยากบินได้ หรือ ล่องหนได้?', 'Would you rather fly or turn invisible?'],
+  ['ถ้าย้อนเวลาได้ อยากกลับไปดูยุคไหน?', 'If you could time-travel, which era would you visit?'],
+  ['ตอนนี้กำลังอินกับอะไรอยู่?', "What's something you're really into these days?"],
+];
 
 // โหลดประวัติ ถ้าเงียบเกิน 20 นาทีนับจากข้อความล่าสุด ทิ้งทั้งชุด
 function load() {
@@ -24,6 +42,7 @@ function save(messages) {
 
 let messages = load();
 let busy = false;
+let proactivePaused = false; // ยิงคำถามชวนคุยแล้วรอคำตอบอยู่ — หยุดยิงจนกว่าผู้ใช้จะตอบ
 
 /* ---------- ไอคอนหุ่นยนต์ AI + ประกาย (inline SVG สีขาวบนพื้น gradient) ---------- */
 const ICON_BOT = `
@@ -107,6 +126,17 @@ function toggle(open) {
 fab.addEventListener('click', () => toggle(panel.classList.contains('hidden')));
 root.querySelector('#chat-close').addEventListener('click', () => toggle(false));
 
+/* ---------- สุ่มชวนคุย ---------- */
+function askIcebreaker() {
+  const [th, en] = ICEBREAKERS[Math.floor(Math.random() * ICEBREAKERS.length)];
+  const q = t(th, en);
+  messages.push({ role: 'assistant', content: q });
+  // ยังไม่ save() — ถ้าผู้ใช้ไม่ตอบแล้วรีเฟรช คำถามชวนคุยก็หายไปเลย
+  if (panel.classList.contains('hidden')) toggle(true); // เปิดหน้าต่างให้เห็น (renderHistory วาด q ให้)
+  else bubble('assistant', q);
+  proactivePaused = true; // ถามแล้ว รอคำตอบ — หยุดยิงจนกว่าจะตอบ
+}
+
 /* ---------- ส่งข้อความ ---------- */
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -114,6 +144,7 @@ form.addEventListener('submit', async (e) => {
   if (!text || busy) return;
 
   busy = true;
+  proactivePaused = false; // ผู้ใช้ตอบแล้ว เปิดให้สุ่มถามได้อีกในรอบถัดไป
   input.value = '';
   armIdle(); // มีการถามต่อ นับถอยหลัง 20 นาทีใหม่
   messages.push({ role: 'user', content: text });
@@ -148,6 +179,11 @@ if (messages.length) armIdle(); // โหลดมายังมีประว
 (async function init() {
   try {
     const { enabled } = await api.chat.status();
-    if (enabled) root.classList.add('ready');
+    if (!enabled) return;
+    root.classList.add('ready');
+    // สุ่มชวนคุยทุก 5 นาที โอกาส 1/20 เริ่มหลังยืนยันว่าฟีเจอร์เปิด
+    setInterval(() => {
+      if (!proactivePaused && Math.random() < PROACTIVE_CHANCE) askIcebreaker();
+    }, PROACTIVE_EVERY);
   } catch { /* ต่อ backend ไม่ได้ ก็ไม่ต้องโชว์ปุ่มแชท */ }
 })();
