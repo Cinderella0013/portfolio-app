@@ -5,23 +5,21 @@ import { esc } from './dom.js';
 import { t } from './i18n.js';
 
 const STORE = 'portfolio.chat';
-const TTL = 60 * 60 * 1000; // 1 ชั่วโมง
+const IDLE = 20 * 60 * 1000; // เงียบครบ 20 นาที (ไม่มีการถามต่อ) ให้รีเซ็ต
 
-// โหลดประวัติ ถ้าเกิน 1 ชม.นับจากเริ่มคุย ทิ้งทั้งชุด
+// โหลดประวัติ ถ้าเงียบเกิน 20 นาทีนับจากข้อความล่าสุด ทิ้งทั้งชุด
 function load() {
   try {
     const saved = JSON.parse(localStorage.getItem(STORE) || 'null');
-    if (saved && Date.now() - saved.startedAt < TTL) return saved.messages;
+    if (saved && Date.now() - saved.lastAt < IDLE) return saved.messages;
   } catch { /* ข้อมูลเสีย ถือว่าไม่มี */ }
   localStorage.removeItem(STORE);
   return [];
 }
 
+// lastAt เลื่อนตามทุกครั้งที่มีข้อความใหม่ — นับถอยหลังใหม่จากกิจกรรมล่าสุด
 function save(messages) {
-  const prev = JSON.parse(localStorage.getItem(STORE) || 'null');
-  // startedAt ตั้งครั้งแรกที่เริ่มคุย ไม่ต่ออายุเมื่อพิมพ์เพิ่ม — นับ 1 ชม.จากข้อความแรก
-  const startedAt = prev && Date.now() - prev.startedAt < TTL ? prev.startedAt : Date.now();
-  localStorage.setItem(STORE, JSON.stringify({ startedAt, messages }));
+  localStorage.setItem(STORE, JSON.stringify({ lastAt: Date.now(), messages }));
 }
 
 let messages = load();
@@ -65,6 +63,17 @@ const log = root.querySelector('#chat-log');
 const form = root.querySelector('#chat-form');
 const input = root.querySelector('#chat-input');
 
+/* ---------- รีเซ็ตเมื่อเงียบครบ 20 นาที (กันเคสเปิดหน้าต่างค้างไว้ไม่รีเฟรช) ---------- */
+let idleTimer;
+function armIdle() {
+  clearTimeout(idleTimer);
+  idleTimer = setTimeout(() => {
+    messages = [];
+    localStorage.removeItem(STORE);
+    if (!panel.classList.contains('hidden')) renderHistory(); // เปิดอยู่ ก็กลับไปทักทายใหม่
+  }, IDLE);
+}
+
 /* ---------- วาด log ---------- */
 function bubble(role, text, pending = false) {
   const div = document.createElement('div');
@@ -106,6 +115,7 @@ form.addEventListener('submit', async (e) => {
 
   busy = true;
   input.value = '';
+  armIdle(); // มีการถามต่อ นับถอยหลัง 20 นาทีใหม่
   messages.push({ role: 'user', content: text });
   save(messages);
   bubble('user', text);
@@ -133,6 +143,8 @@ form.addEventListener('submit', async (e) => {
 });
 
 /* ---------- เริ่มทำงาน: โชว์ปุ่มเฉพาะเมื่อ backend เปิดฟีเจอร์แชท ---------- */
+if (messages.length) armIdle(); // โหลดมายังมีประวัติค้าง เดินนาฬิกา 20 นาทีต่อ
+
 (async function init() {
   try {
     const { enabled } = await api.chat.status();
