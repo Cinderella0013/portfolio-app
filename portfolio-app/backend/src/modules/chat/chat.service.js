@@ -3,6 +3,7 @@
 import { prisma } from '../../config/prisma.js';
 import { env } from '../../config/env.js';
 import { ApiError } from '../../utils/ApiError.js';
+import { liveData } from './livedata.js';
 
 export const chatEnabled = Boolean(env.CHATBOT_API_KEY);
 
@@ -25,9 +26,10 @@ async function systemPrompt() {
   const name = profile?.fullName || 'เจ้าของเว็บ';
   const lines = [
     `คุณเป็นผู้ช่วย AI ที่เป็นมิตรและมีความรู้กว้าง อยู่บนเว็บพอร์ตโฟลิโอของ "${name}"`,
-    `กฎสำคัญ: ตอบเนื้อหาที่ผู้ใช้ถามทันทีและตรงประเด็น ห้ามตอบแค่ทักทายลอยๆ หรือถามกลับว่าให้ช่วยอะไร`,
-    `ตอบได้ทุกเรื่องเต็มที่ ทั้งเรื่องทั่วไป (สภาพอากาศ ความรู้ ทำอาหาร คำแนะนำ ฯลฯ) และเรื่องของ ${name}`,
-    `ถ้าเป็นข้อมูลสดที่คุณไม่มีจริง (อากาศ ณ ขณะนี้ ราคาปัจจุบัน ข่าววันนี้) ให้บอกสั้นๆ ว่าไม่มีข้อมูลเรียลไทม์ แล้วให้ความรู้/คำแนะนำทั่วไปที่เป็นประโยชน์แทน เช่น อากาศตามฤดูกาล`,
+    `กฎสำคัญ: ตอบเนื้อหาที่ผู้ใช้ถามทันทีและตรงประเด็น สั้นกระชับ ห้ามตอบแค่ทักทายลอยๆ หรือถามกลับว่าให้ช่วยอะไร`,
+    `ตอบได้ทุกเรื่องเต็มที่ ทั้งเรื่องทั่วไปและเรื่องของ ${name}`,
+    `ถ้ามี "ข้อมูลสด" แนบมาใน context ให้ตอบด้วยตัวเลข/ข้อเท็จจริงนั้นตรงๆ สั้นๆ (เช่น "27 องศาครับ") ห้ามเติมคำปฏิเสธว่าไม่มีข้อมูลเรียลไทม์`,
+    `ถ้าไม่มีข้อมูลสดแนบมาและเป็นเรื่องที่ต้องรู้ค่าปัจจุบันจริงๆ ให้ตอบด้วยความรู้ที่ดีที่สุดแบบสั้นๆ อย่าเทศนายาวหรือออกตัวเยอะ ออกตัวได้ไม่เกินครึ่งประโยค`,
     `ตอบด้วยน้ำเสียงเป็นกันเองและกระชับ ภาษาเดียวกับที่ผู้ใช้ถาม (ไทยหรืออังกฤษ)`,
     `ถ้าถามเรื่องจ้างงานหรือติดต่อ ให้แนะนำฟอร์มติดต่อในหน้าเว็บ`,
     `--- ข้อมูลของ ${name} (ใช้เมื่อถูกถามถึง) ---`,
@@ -41,13 +43,27 @@ async function systemPrompt() {
   return cachedPrompt.text;
 }
 
+// รวบรวมข้อมูลสดที่ดึงได้จริงตามคำถามล่าสุด: วันเวลา + อากาศ/คริปโต/ค่าเงิน (ถ้าถาม)
+async function liveContext(lastUserText) {
+  const now = new Date().toLocaleString('th-TH', {
+    timeZone: 'Asia/Bangkok', dateStyle: 'full', timeStyle: 'short',
+  });
+  const extra = await liveData(lastUserText);
+  return `[วันเวลาปัจจุบัน] ${now} (เขตเวลาไทย)${extra ? '\n' + extra : ''}`;
+}
+
 export const chatService = {
   async reply(messages) {
     if (!chatEnabled) throw ApiError.badRequest('ระบบแชทยังไม่พร้อมใช้งาน');
 
+    const lastUser = [...messages].reverse().find((m) => m.role === 'user')?.content || '';
     const body = {
       model: env.CHATBOT_MODEL,
-      messages: [{ role: 'system', content: await systemPrompt() }, ...messages],
+      messages: [
+        { role: 'system', content: await systemPrompt() },
+        { role: 'system', content: await liveContext(lastUser) },
+        ...messages,
+      ],
       max_tokens: 800,
       temperature: 0.6,
     };
