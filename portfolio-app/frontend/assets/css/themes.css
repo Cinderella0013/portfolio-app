@@ -125,6 +125,7 @@
   animation:fab-sheen 5s ease infinite;
 }
 @keyframes fab-sheen{ 50%{ background-position:100% 100%; } }
+#chat-fab svg{ width:34px; height:34px; display:block; }
 #chat-fab:hover{ transform:translate(2px,2px) rotate(-8deg); box-shadow:3px 3px 0 var(--ink); }
 /* วงแหวนขยายออกเรียกสายตา — โชว์เฉพาะตอนแชทปิดอยู่ */
 #chat-fab[aria-expanded="false"]::before{

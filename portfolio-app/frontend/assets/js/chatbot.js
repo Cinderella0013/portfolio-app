@@ -27,11 +27,24 @@ function save(messages) {
 let messages = load();
 let busy = false;
 
+/* ---------- ไอคอนหุ่นยนต์ AI + ประกาย (inline SVG สีขาวบนพื้น gradient) ---------- */
+const ICON_BOT = `
+  <svg viewBox="0 0 512 512" width="34" height="34" aria-hidden="true" fill="none"
+       stroke="currentColor" stroke-width="42" stroke-linejoin="round" stroke-linecap="round">
+    <rect x="242" y="46" width="28" height="72" rx="14" fill="currentColor" stroke="none"/>
+    <path d="M150 112 H360 A55 55 0 0 1 415 167 V292 A55 55 0 0 1 360 347 H250
+             A150 150 0 0 1 100 197 V167 A55 55 0 0 1 150 112 Z"/>
+    <circle cx="196" cy="228" r="30" fill="currentColor" stroke="none"/>
+    <circle cx="320" cy="228" r="30" fill="currentColor" stroke="none"/>
+    <path fill="currentColor" stroke="none"
+          d="M410 330 Q432 388 490 410 Q432 432 410 490 Q388 432 330 410 Q388 388 410 330 Z"/>
+  </svg>`;
+
 /* ---------- สร้าง DOM ---------- */
 const root = document.createElement('div');
 root.id = 'chat-widget';
 root.innerHTML = `
-  <button id="chat-fab" aria-label="${t('เปิดแชท', 'Open chat')}" aria-expanded="false">💬</button>
+  <button id="chat-fab" aria-label="${t('เปิดแชท', 'Open chat')}" aria-expanded="false">${ICON_BOT}</button>
   <section id="chat-panel" class="hidden" role="dialog" aria-label="${t('แชท', 'Chat')}">
     <header>
       <span>${t('💬 ถามอะไรก็ได้', "💬 Ask me anything")}</span>
@@ -79,7 +92,7 @@ function renderHistory() {
 function toggle(open) {
   panel.classList.toggle('hidden', !open);
   fab.setAttribute('aria-expanded', String(open));
-  fab.textContent = open ? '✕' : '💬';
+  fab.innerHTML = open ? '✕' : ICON_BOT;
   if (open) { renderHistory(); input.focus(); }
 }
 fab.addEventListener('click', () => toggle(panel.classList.contains('hidden')));
