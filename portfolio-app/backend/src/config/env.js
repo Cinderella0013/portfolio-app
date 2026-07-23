@@ -13,6 +13,10 @@ const schema = z.object({
   GOOGLE_SA_EMAIL: z.string().optional(),
   GOOGLE_SA_KEY: z.string().optional(),
   SHEETS_ID: z.string().optional(),
+  // แชทบอท (OpenAI-compatible เช่น Gen AI KKU) — ไม่ตั้ง CHATBOT_API_KEY ก็ปิดฟีเจอร์
+  CHATBOT_API_KEY: z.string().optional(),
+  CHATBOT_BASE_URL: z.string().default('https://gen.ai.kku.ac.th/api/v1'),
+  CHATBOT_MODEL: z.string().default('gemini-3.5-flash-lite'),
 });
 
 const parsed = schema.safeParse(process.env);

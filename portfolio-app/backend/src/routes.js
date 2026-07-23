@@ -8,6 +8,7 @@ import experiencesRoutes from './modules/experiences/experiences.routes.js';
 import projectsRoutes from './modules/projects/projects.routes.js';
 import messagesRoutes from './modules/messages/messages.routes.js';
 import linksRoutes from './modules/links/links.routes.js';
+import chatRoutes from './modules/chat/chat.routes.js';
 
 const router = Router();
 
@@ -29,5 +30,6 @@ router.use('/experiences', experiencesRoutes);
 router.use('/projects', projectsRoutes);
 router.use('/messages', messagesRoutes);
 router.use('/links', linksRoutes);
+router.use('/chat', chatRoutes);
 
 export default router;

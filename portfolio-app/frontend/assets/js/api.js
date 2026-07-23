@@ -85,6 +85,10 @@ export const api = {
     create: (d) => request('/links', { method: 'POST', body: d, auth: true }),
     remove: (code) => request(`/links/${code}`, { method: 'DELETE', auth: true }),
   },
+  chat: {
+    status: () => request('/chat/status'),
+    send: (messages) => request('/chat', { method: 'POST', body: { messages } }).then((d) => d.reply),
+  },
   messages: {
     send: (d) => request('/messages', { method: 'POST', body: d }),
     list: () => request('/messages', { auth: true }),
