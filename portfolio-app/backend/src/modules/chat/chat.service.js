@@ -84,7 +84,11 @@ export const chatService = {
     }
 
     const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new ApiError(502, `ระบบแชทตอบกลับผิดพลาด (${res.status})`);
+    if (!res.ok) {
+      // โควตา/สิทธิ์โมเดลหมดหรือผู้ให้บริการล่ม — ผู้ชมเว็บไม่ต้องเห็นรหัสดิบ แต่ log ไว้ให้ดีบัก
+      console.error('[chat] upstream', res.status, JSON.stringify(data).slice(0, 200));
+      throw new ApiError(502, 'ตอนนี้แชทใช้งานไม่ได้ชั่วคราว ลองใหม่ภายหลังครับ');
+    }
 
     const text = data.choices?.[0]?.message?.content?.trim();
     if (!text) throw new ApiError(502, 'ระบบแชทไม่มีคำตอบ');
