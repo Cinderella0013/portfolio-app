@@ -98,7 +98,30 @@
           <div class="field"><label for="p-avatarUrl">รูปโปรไฟล์ (URL)</label><input id="p-avatarUrl" name="avatarUrl"></div>
           <div class="field"><label for="p-resumeUrl">ไฟล์เรซูเม่ (URL)</label><input id="p-resumeUrl" name="resumeUrl"></div>
         </div>
-        <button class="btn btn-primary" type="submit">บันทึกโปรไฟล์</button>
+        <fieldset class="profile-extra">
+          <legend>ช่วงนี้ผมกำลัง…</legend>
+          <p class="editor-note">แสดงบนหน้าเว็บเมื่อมีข้อความ วันที่อัปเดตจะเปลี่ยนเมื่อแก้บันทึกนี้</p>
+          <div class="field"><label for="p-nowText">บันทึกช่วงนี้</label><textarea id="p-nowText" name="nowText" maxlength="2000" placeholder="กำลังเรียนอะไร ทำโปรเจกต์ไหน หรือมีเป้าหมายอะไรช่วงนี้"></textarea></div>
+          <details class="translation-fields"><summary>เพิ่มข้อความภาษาอังกฤษ (ไม่จำเป็น)</summary>
+            <div class="field"><label for="p-nowTextEn">บันทึกช่วงนี้ (English)</label><textarea id="p-nowTextEn" name="nowTextEn" maxlength="2000"></textarea></div>
+          </details>
+        </fieldset>
+        <fieldset class="profile-extra">
+          <legend>นอกเวลางาน</legend>
+          <p class="editor-note">ข้อมูลส่วนนี้แสดงสาธารณะ เว้นหมวดที่ยังไม่ต้องการแสดงให้ว่างได้</p>
+          <div class="field"><label for="p-personality">บุคลิก / นิสัย</label><textarea id="p-personality" name="personality" maxlength="1000" placeholder="เล่าตัวตนของคุณด้วยคำของคุณเอง"></textarea></div>
+          <div class="field"><label for="p-personalityTags">แท็กบุคลิก</label><input id="p-personalityTags" name="personalityTags"><p class="hint">คั่นด้วยจุลภาค สูงสุด 12 แท็ก แท็กละไม่เกิน 40 ตัวอักษร</p></div>
+          <div class="field"><label for="p-music">เพลงที่ชอบฟัง</label><textarea id="p-music" name="music" maxlength="1000" placeholder="ชื่อเพลง ศิลปิน หรือเรื่องเล่าเกี่ยวกับเพลย์ลิสต์โปรด"></textarea></div>
+          <div class="field"><label for="p-musicUrl">ลิงก์เพลง / เพลย์ลิสต์</label><input id="p-musicUrl" name="musicUrl" type="url" maxlength="2000" placeholder="https://open.spotify.com/…"></div>
+          <div class="field"><label for="p-sports">กีฬาหรือกิจกรรมที่ชอบ</label><textarea id="p-sports" name="sports" maxlength="1000" placeholder="เล่นอะไร ชอบตรงไหน หรือกำลังฝึกอะไรอยู่"></textarea></div>
+          <div class="field"><label for="p-sportsImageUrl">ลิงก์รูปกิจกรรม</label><input id="p-sportsImageUrl" name="sportsImageUrl" type="url" maxlength="2000"><p class="hint">ใช้ลิงก์รูปที่เปิดดูได้สาธารณะ ผ่าน http หรือ https</p></div>
+          <details class="translation-fields"><summary>เพิ่มข้อความภาษาอังกฤษ (ไม่จำเป็น)</summary>
+            <div class="field"><label for="p-personalityEn">บุคลิก (English)</label><textarea id="p-personalityEn" name="personalityEn" maxlength="1000"></textarea></div>
+            <div class="field"><label for="p-musicEn">เพลงที่ชอบฟัง (English)</label><textarea id="p-musicEn" name="musicEn" maxlength="1000"></textarea></div>
+            <div class="field"><label for="p-sportsEn">กีฬา / กิจกรรม (English)</label><textarea id="p-sportsEn" name="sportsEn" maxlength="1000"></textarea></div>
+          </details>
+        </fieldset>
+        <button class="btn btn-primary" type="submit" disabled>บันทึกโปรไฟล์</button>
       </form>
     </section>
 
@@ -172,6 +195,19 @@
         <div class="field"><label for="pr-summary">คำอธิบายสั้น</label><input id="pr-summary" name="summary" required maxlength="300"></div>
         <div class="field"><label for="pr-summaryEn">คำอธิบายสั้น (English)</label><input id="pr-summaryEn" name="summaryEn" maxlength="300" placeholder="เว้นว่างได้ ถ้าว่างหน้า EN จะแสดงข้อความไทย"></div>
         <div class="field"><label for="pr-description">รายละเอียดเต็ม</label><textarea id="pr-description" name="description"></textarea></div>
+        <fieldset class="profile-extra project-fields">
+          <legend>เรื่องเบื้องหลังผลงาน</legend>
+          <p class="editor-note">กรอกเฉพาะข้อมูลจริง ช่องที่เว้นว่างจะไม่แสดงบนหน้าเว็บ</p>
+          <div class="field"><label for="pr-coverUrl">ลิงก์ภาพผลงาน / ภาพหน้าจอ</label><input id="pr-coverUrl" name="coverUrl" type="url" maxlength="2000"></div>
+          <div class="field"><label for="pr-problem">โจทย์ที่ต้องแก้</label><textarea id="pr-problem" name="problem" maxlength="2000"></textarea></div>
+          <div class="field"><label for="pr-contribution">ส่วนที่คุณรับผิดชอบ</label><textarea id="pr-contribution" name="contribution" maxlength="2000"></textarea></div>
+          <div class="field"><label for="pr-outcome">ผลลัพธ์</label><textarea id="pr-outcome" name="outcome" maxlength="2000"></textarea></div>
+          <details class="translation-fields"><summary>เพิ่มเรื่องเบื้องหลังภาษาอังกฤษ (ไม่จำเป็น)</summary>
+            <div class="field"><label for="pr-problemEn">โจทย์ (English)</label><textarea id="pr-problemEn" name="problemEn" maxlength="2000"></textarea></div>
+            <div class="field"><label for="pr-contributionEn">ส่วนที่รับผิดชอบ (English)</label><textarea id="pr-contributionEn" name="contributionEn" maxlength="2000"></textarea></div>
+            <div class="field"><label for="pr-outcomeEn">ผลลัพธ์ (English)</label><textarea id="pr-outcomeEn" name="outcomeEn" maxlength="2000"></textarea></div>
+          </details>
+        </fieldset>
         <div class="grid-2">
           <div class="field"><label for="pr-tags">แท็ก</label><input id="pr-tags" name="tags"><p class="hint">คั่นด้วยจุลภาค เช่น React, Node.js</p></div>
           <div class="field"><label for="pr-sortOrder">ลำดับการแสดง</label><input id="pr-sortOrder" name="sortOrder" type="number" value="0"></div>

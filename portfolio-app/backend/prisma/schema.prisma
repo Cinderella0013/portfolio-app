@@ -39,6 +39,18 @@ model Profile {
   websiteUrl  String?
   avatarUrl   String?
   resumeUrl   String?
+  personality String?
+  personalityEn String?
+  personalityTags String[] @default([])
+  music       String?
+  musicEn     String?
+  musicUrl    String?
+  sports      String?
+  sportsEn    String?
+  sportsImageUrl String?
+  nowText     String?
+  nowTextEn   String?
+  nowUpdatedAt DateTime?
   updatedAt   DateTime @updatedAt
 
   @@map("profile")
@@ -84,6 +96,13 @@ model Project {
   summary     String
   summaryEn   String?  // คำอธิบายอังกฤษ แสดงเมื่อเลือกภาษา EN
   description String?
+  problem     String?
+  problemEn   String?
+  contribution String?
+  contributionEn String?
+  outcome     String?
+  outcomeEn   String?
+  coverUrl    String?
   coverEmoji  String   @default("{ }")
   tags        String[] @default([])
   repoUrl     String?

@@ -14,6 +14,7 @@ function renderProfile(p) {
   $('#hero-headline').textContent = t(p.headline, p.headlineEn || p.headline);
   $('#nav-logo').textContent = '~/' + p.fullName.split(/\s+/)[0].toLowerCase();
   $('#footer-name').textContent = `© ${new Date().getFullYear()} ${p.fullName}`;
+  renderPersonalContent(p);
 
   $('#about-bio').innerHTML = t(p.bio || '', p.bioEn || p.bio || '')
     .split(/\n{2,}/).filter(Boolean)
@@ -38,6 +39,63 @@ function renderProfile(p) {
     p.location ? `<span class="term-key">base</span>:  ${esc(p.location)}` : null,
     '<span class="term-prompt">$</span> <span class="caret"></span>',
   ].filter(Boolean));
+}
+
+function renderPersonalContent(p) {
+  const text = (th, en) => t(th || en || '', en || th || '');
+  const personality = text(p.personality, p.personalityEn);
+  const tags = p.personalityTags || [];
+  const music = text(p.music, p.musicEn);
+  const sports = text(p.sports, p.sportsEn);
+  const musicUrl = /^https?:\/\//i.test(p.musicUrl || '') ? p.musicUrl : '';
+  const sportsImageUrl = /^https?:\/\//i.test(p.sportsImageUrl || '') ? p.sportsImageUrl : '';
+  $('#personality-text').textContent = personality;
+  $('#personality-tags').innerHTML = tags.map((tag) => `<span>${esc(tag)}</span>`).join('');
+  $('#life-personality').classList.toggle('hidden', !personality && !tags.length);
+  $('#music-text').textContent = music;
+  $('#music-link').classList.toggle('hidden', !musicUrl);
+  if (musicUrl) $('#music-link').href = musicUrl;
+  $('#life-music').classList.toggle('hidden', !music && !musicUrl);
+  $('#sports-text').textContent = sports;
+  $('#sports-photo').innerHTML = sportsImageUrl
+    ? `<img id="sports-image" class="content-image" src="${esc(sportsImageUrl)}" alt="${esc(sports || t('กิจกรรมยามว่าง', 'An activity I enjoy'))}" loading="lazy" width="600" height="400">`
+    : '';
+  $('#life-sports').classList.toggle('hidden', !sports && !sportsImageUrl);
+  const hasLifestyle = Boolean(personality || tags.length || music || musicUrl || sports || sportsImageUrl);
+  for (const id of ['lifestyle', 'lifestyle-nav', 'discovery-life']) {
+    $(`#${id}`).classList.toggle('hidden', !hasLifestyle);
+  }
+
+  const now = text(p.nowText, p.nowTextEn);
+  $('#now').classList.toggle('hidden', !now);
+  $('#discovery-now').classList.toggle('hidden', !now);
+  $('#now-text').textContent = now;
+  $('#discovery-now-text').textContent = now;
+  if (now && p.nowUpdatedAt) {
+    const date = new Date(p.nowUpdatedAt).toLocaleDateString(t('th-TH', 'en-GB'), { dateStyle: 'medium', timeZone: 'Asia/Bangkok' });
+    $('#now-updated').textContent = `${t('อัปเดต', 'Updated')} ${date}`;
+  }
+}
+
+function bindDiscovery() {
+  const track = $('#discovery-track');
+  const prev = $('#discovery-prev');
+  const next = $('#discovery-next');
+  prev.setAttribute('aria-label', t('เลื่อนรายการก่อนหน้า', 'Scroll to previous stories'));
+  next.setAttribute('aria-label', t('เลื่อนรายการถัดไป', 'Scroll to next stories'));
+  const update = () => {
+    prev.disabled = track.scrollLeft <= 2;
+    next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 2;
+  };
+  const move = (direction) => track.scrollBy({
+    left: direction * (track.querySelector('li:not(.hidden)').getBoundingClientRect().width + 16),
+    behavior: reduced ? 'instant' : 'smooth',
+  });
+  prev.addEventListener('click', () => move(-1));
+  next.addEventListener('click', () => move(1));
+  track.addEventListener('scroll', update, { passive: true });
+  new ResizeObserver(update).observe(track);
+  update();
 }
 
 function typeTerminal(lines) {
@@ -79,18 +137,45 @@ const renderTimeline = (items) => {
 };
 
 /* ---------- ผลงาน ---------- */
+async function fetchGithubProjects() {
+  const response = await fetch('https://api.github.com/users/Cinderella0013/repos?per_page=100&sort=updated', {
+    headers: { Accept: 'application/vnd.github+json' },
+  });
+  if (!response.ok) throw new Error(`GitHub API: ${response.status}`);
+
+  const repos = (await response.json()).filter((repo) => !repo.fork && !repo.archived);
+  return repos.sort(() => Math.random() - 0.5).slice(0, 2).map((repo) => ({
+    title: repo.name,
+    summary: repo.description || t('โปรเจกต์จาก GitHub', 'GitHub project'),
+    coverEmoji: repo.language ? '</>' : '{ }',
+    tags: repo.language ? [repo.language] : [],
+    repoUrl: repo.html_url,
+  }));
+}
+
 const renderProjects = (projects) => {
   $('#projects-grid').innerHTML = projects.length
     ? projects.map((p) => `
-      <article class="card">
-        <div class="card-top">${esc(p.coverEmoji)}</div>
+      <article class="card${p.featured ? ' is-featured' : ''}">
+        <div class="card-top">${p.coverUrl && /^https?:\/\//i.test(p.coverUrl) ? `<img class="project-cover content-image" src="${esc(p.coverUrl)}" alt="${esc(t('ภาพผลงาน ', 'Project preview: ') + p.title)}" loading="lazy" width="800" height="500">` : ''}<span aria-hidden="true">${esc(p.coverEmoji || '{ }')}</span></div>
         <div class="card-body">
+          ${p.featured ? `<span class="featured-label">${t('ผลงานเด่น', 'Featured project')}</span>` : ''}
           <h3>${esc(p.title)}</h3>
           <p>${esc(t(p.summary, p.summaryEn || p.summary))}</p>
+          ${[p.problem, p.problemEn, p.contribution, p.contributionEn, p.outcome, p.outcomeEn, p.description].some(Boolean) ? `
+            <details class="project-story">
+              <summary>${t('อ่านเรื่องเบื้องหลัง', 'Behind the project')} <span aria-hidden="true">＋</span></summary>
+              <dl>${[
+                [t('โจทย์ที่ต้องแก้', 'The problem'), t(p.problem || p.problemEn, p.problemEn || p.problem)],
+                [t('ส่วนที่ผมรับผิดชอบ', 'My contribution'), t(p.contribution || p.contributionEn, p.contributionEn || p.contribution)],
+                [t('ผลลัพธ์', 'The outcome'), t(p.outcome || p.outcomeEn, p.outcomeEn || p.outcome)],
+              ].filter(([, value]) => value).map(([label, value]) => `<div><dt>${label}</dt><dd>${esc(value)}</dd></div>`).join('')}</dl>
+              ${p.description ? `<p class="project-description">${esc(p.description)}</p>` : ''}
+            </details>` : ''}
           <div class="tags">${(p.tags || []).map((t) => `<span class="tag">${esc(t)}</span>`).join('')}</div>
-          <div>
-            ${p.liveUrl ? `<a class="card-link" href="${esc(p.liveUrl)}" target="_blank" rel="noopener">${t('เปิดดู', 'Live')} →</a>` : ''}
-            ${p.repoUrl ? `<a class="card-link" href="${esc(p.repoUrl)}" target="_blank" rel="noopener">${t('ซอร์สโค้ด', 'Source')} →</a>` : ''}
+          <div class="card-actions">
+            ${p.repoUrl ? `<a class="btn btn-primary card-link-primary" href="${esc(p.repoUrl)}" target="_blank" rel="noopener">${t('ดูบน GitHub', 'View on GitHub')} →</a>` : ''}
+            ${p.liveUrl ? `<a class="card-link" href="${esc(p.liveUrl)}" target="_blank" rel="noopener">${t('เปิดเดโม', 'Live demo')} →</a>` : ''}
           </div>
         </div>
       </article>`).join('')
@@ -140,10 +225,13 @@ function bindReveal() {
 /* ---------- เริ่มทำงาน ---------- */
 (async function init() {
   bindContactForm();
+  document.addEventListener('error', (event) => {
+    if (event.target instanceof HTMLImageElement && event.target.classList.contains('content-image')) event.target.classList.add('hidden');
+  }, true);
 
   // โหลดพร้อมกันทั้งหมด ส่วนไหนพังก็ไม่ลากส่วนอื่นล้มตาม
-  const [profile, skills, experiences, projects] = await Promise.allSettled([
-    api.profile.get(), api.skills.list(), api.experiences.list(), api.projects.list(),
+  const [profile, skills, experiences, projects, githubProjects] = await Promise.allSettled([
+    api.profile.get(), api.skills.list(), api.experiences.list(), api.projects.list(), fetchGithubProjects(),
   ]);
 
   if (profile.status === 'fulfilled') renderProfile(profile.value);
@@ -151,7 +239,10 @@ function bindReveal() {
 
   if (skills.status === 'fulfilled') renderSkills(skills.value);
   if (experiences.status === 'fulfilled') renderTimeline(experiences.value);
-  if (projects.status === 'fulfilled') renderProjects(projects.value);
+  if (projects.status === 'fulfilled' && projects.value.length) renderProjects(projects.value);
+  else if (githubProjects.status === 'fulfilled') renderProjects(githubProjects.value);
+  else renderProjects([]);
+  bindDiscovery();
 
   // ผูก reveal หลังวาดเนื้อหาแล้วเท่านั้น — ถ้าผูกก่อน section ที่อยู่ในจอ
   // จะถูกนับว่า "เห็นแล้ว" ตั้งแต่ยังว่าง ของที่มาทีหลังเลยโผล่ทันทีไม่ทยอยไหล

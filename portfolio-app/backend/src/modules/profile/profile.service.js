@@ -19,6 +19,12 @@ export const profileService = {
     const clean = Object.fromEntries(
       Object.entries(data).map(([k, v]) => [k, v === '' ? null : v]),
     );
+    if ('nowText' in clean || 'nowTextEn' in clean) {
+      const current = await prisma.profile.findUnique({ where: { id: PROFILE_ID } });
+      if (['nowText', 'nowTextEn'].some((key) => key in clean && clean[key] !== (current?.[key] ?? null))) {
+        clean.nowUpdatedAt = new Date();
+      }
+    }
     return prisma.profile.upsert({
       where: { id: PROFILE_ID },
       create: { id: PROFILE_ID, ...clean },

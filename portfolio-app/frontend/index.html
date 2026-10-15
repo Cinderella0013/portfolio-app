@@ -11,13 +11,14 @@
 <link rel="stylesheet" href="assets/css/style.css">
 <link rel="stylesheet" href="assets/css/themes.css">
 </head>
-<body>
+<body class="portfolio-page">
 
 <nav class="nav">
   <div class="wrap">
     <a class="nav-logo" href="#top" id="nav-logo">~/portfolio</a>
     <div class="nav-links">
       <a href="#about" data-en="About">เกี่ยวกับฉัน</a>
+      <a href="#lifestyle" id="lifestyle-nav" class="hidden" data-en="Life">นอกเวลางาน</a>
       <a href="#work" data-en="Journey">ประวัติ</a>
       <a href="#projects" data-en="Work">ผลงาน</a>
       <a href="#contact" data-en="Contact">ติดต่อ</a>
@@ -26,8 +27,9 @@
   </div>
 </nav>
 
-<header class="hero wrap theme-y2k" id="top">
-  <div class="hero-grid">
+<header class="hero theme-y2k" id="top">
+  <script src="assets/js/hero-theme.js"></script>
+  <div class="hero-grid wrap">
     <div>
       <span class="hero-hi" data-en="Nice to meet you 👋">ยินดีที่ได้รู้จักครับ 👋</span>
       <h1><span data-en="Hi, I'm">สวัสดี ผมชื่อ</span><br><em id="hero-name" data-en="Loading…">กำลังโหลด…</em></h1>
@@ -49,9 +51,30 @@
   </div>
 </header>
 
-<div class="y2k-marquee" aria-hidden="true">
-  <span>★ WELCOME TO MY WORLD ★ Y2K × RETRO × CYBERPUNK × HAND-DRAWN ★ ลองพิมพ์ ↑↑↓↓←→←→BA ดูสิ ★ WELCOME TO MY WORLD ★</span>
-</div>
+<section class="discovery" aria-labelledby="discovery-title">
+  <div class="wrap">
+    <div class="discovery-head">
+      <div>
+        <h2 id="discovery-title" data-en="A few ways to get to know me">รู้จักกันอีกนิด</h2>
+        <p data-en="Pick a story. Take a look around.">เลือกเรื่องที่สนใจ แล้วลองแวะดูครับ</p>
+      </div>
+      <div class="discovery-controls">
+        <button class="btn btn-sm" type="button" id="discovery-prev" aria-label="เลื่อนรายการก่อนหน้า" disabled><span aria-hidden="true">←</span></button>
+        <button class="btn btn-sm" type="button" id="discovery-next" aria-label="เลื่อนรายการถัดไป" disabled><span aria-hidden="true">→</span></button>
+      </div>
+    </div>
+    <nav aria-labelledby="discovery-title">
+      <ul class="discovery-track" id="discovery-track" tabindex="0">
+        <li class="discovery-item"><a href="#about"><span class="discovery-label">ABOUT ME <span aria-hidden="true">↗</span></span><strong data-en="The person behind the code">คนที่อยู่หลังโค้ด</strong><span data-en="My story and the things I do best">เรื่องราวและสิ่งที่ผมถนัด</span></a></li>
+        <li class="discovery-item"><a href="#projects"><span class="discovery-label">SELECTED WORK <span aria-hidden="true">↗</span></span><strong data-en="From ideas to real things">จากไอเดียสู่ของจริง</strong><span data-en="Projects, process, and what I learned">ผลงาน วิธีคิด และสิ่งที่ได้เรียนรู้</span></a></li>
+        <li class="discovery-item hidden" id="discovery-now"><a href="#now"><span class="discovery-label">RIGHT NOW <span aria-hidden="true">↗</span></span><strong data-en="What's on my desk">ช่วงนี้ผมกำลัง…</strong><span id="discovery-now-text"></span></a></li>
+        <li class="discovery-item hidden" id="discovery-life"><a href="#lifestyle"><span class="discovery-label">OFF THE CLOCK <span aria-hidden="true">↗</span></span><strong data-en="A little more than code">อีกมุมที่นอกเหนือจากงาน</strong><span data-en="Personality, playlists, and time to play">บุคลิก เพลงโปรด และกิจกรรมที่ชอบ</span></a></li>
+        <li class="discovery-item"><a href="#work"><span class="discovery-label">MY JOURNEY <span aria-hidden="true">↗</span></span><strong data-en="How I got here">เส้นทางที่ผ่านมาของผม</strong><span data-en="Work, education, and experience">การทำงาน การเรียน และประสบการณ์</span></a></li>
+        <li class="discovery-item"><a href="#contact"><span class="discovery-label">SAY HELLO <span aria-hidden="true">↗</span></span><strong data-en="Start a conversation">เริ่มต้นบทสนทนา</strong><span data-en="Have an idea? Let's talk.">มีไอเดียอยากคุยกัน ทักมาได้เลย</span></a></li>
+      </ul>
+    </nav>
+  </div>
+</section>
 
 <section class="section wrap reveal theme-hand" id="about">
   <p class="eyebrow" data-en="// 01 — About me">// 01 — เกี่ยวกับฉัน</p>
@@ -65,16 +88,55 @@
   </div>
 </section>
 
-<section class="section wrap reveal theme-retro" id="work">
+<section class="section now-section hidden" id="now" aria-labelledby="now-title">
+  <div class="wrap now-layout">
+    <div>
+      <h2 id="now-title" data-en="What's on <mark>my desk</mark>">ช่วงนี้ผม<mark>กำลัง…</mark></h2>
+      <p data-en="A small update from this chapter of my life.">บันทึกสั้น ๆ ของชีวิตในช่วงนี้</p>
+      <p class="now-updated" id="now-updated"></p>
+    </div>
+    <div class="now-note"><div id="now-text"></div></div>
+  </div>
+</section>
+
+<section class="section wrap hidden" id="lifestyle" aria-labelledby="lifestyle-title">
+  <div class="lifestyle-heading">
+    <h2 id="lifestyle-title" data-en="Me, <mark>off the clock</mark>">นอกเวลางาน<mark>ผมเป็นแบบนี้</mark></h2>
+    <p data-en="A few things that make me, me.">รู้จักผมผ่านสิ่งเล็ก ๆ ที่ชอบในชีวิต</p>
+  </div>
+  <div class="lifestyle-grid">
+    <article class="life-card life-personality hidden" id="life-personality">
+      <h3 data-en="A little about me">นิสัยของผม</h3>
+      <p id="personality-text"></p>
+      <div class="personality-tags" id="personality-tags"></div>
+    </article>
+    <article class="life-card life-music hidden" id="life-music">
+      <div class="music-record" aria-hidden="true"><span></span></div>
+      <h3 data-en="On repeat">เพลงที่วนฟัง</h3>
+      <p id="music-text"></p>
+      <a class="life-link hidden" id="music-link" target="_blank" rel="noopener" data-en="Open playlist ↗">เปิดฟังเพลง ↗</a>
+    </article>
+    <article class="life-card life-sports hidden" id="life-sports">
+      <div id="sports-photo"></div>
+      <div class="life-sports-body"><h3 data-en="Time to move">เวลาขยับตัว</h3><p id="sports-text"></p></div>
+    </article>
+  </div>
+</section>
+
+<section class="section theme-retro" id="work">
+  <div class="wrap reveal">
   <p class="eyebrow" data-en="// 02 — Work &amp; Education">// 02 — ประวัติการทำงานและการศึกษา</p>
   <h2 data-en="The path that <mark>led me here</mark>">เส้นทางที่<mark>พาผมมาถึงตรงนี้</mark></h2>
   <div class="timeline" id="timeline"></div>
+  </div>
 </section>
 
-<section class="section wrap reveal theme-cyber" id="projects">
+<section class="section theme-cyber" id="projects">
+  <div class="wrap reveal">
   <p class="eyebrow" data-en="// 03 — Work">// 03 — ผลงาน</p>
   <h2 data-en="Things <mark>I've shipped</mark> that people actually use">ของที่<mark>ทำเสร็จแล้ว</mark> และมีคนใช้จริง</h2>
   <div class="proj-grid" id="projects-grid"></div>
+  </div>
 </section>
 
 <section class="section wrap reveal" id="contact">

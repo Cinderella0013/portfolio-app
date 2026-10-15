@@ -87,11 +87,23 @@ const profileForm = $('#profile-form');
 profileForm.addEventListener('submit', (e) => {
   e.preventDefault();
   handle(async () => {
-    await api.profile.update(readForm(profileForm));
+    const button = profileForm.querySelector('[type="submit"]');
+    button.disabled = true;
+    try {
+      const data = readForm(profileForm);
+      data.personalityTags = data.personalityTags.split(',').map((tag) => tag.trim()).filter(Boolean);
+      await api.profile.update(data);
+    } finally {
+      button.disabled = false;
+    }
   }, 'บันทึกโปรไฟล์แล้ว');
 });
 
-const loadProfile = () => handle(async () => fillForm(profileForm, await api.profile.get()));
+const loadProfile = () => handle(async () => {
+  const profile = await api.profile.get();
+  fillForm(profileForm, { ...profile, personalityTags: (profile.personalityTags || []).join(', ') });
+  profileForm.querySelector('[type="submit"]').disabled = false;
+});
 
 /* ============ ตัวสร้างส่วนจัดการแบบ CRUD ที่ใช้ซ้ำได้ ============ */
 function makeCrud({ formId, rowsId, titleId, resource, toPayload, toRow, toForm, numbers = [], booleans = [] }) {

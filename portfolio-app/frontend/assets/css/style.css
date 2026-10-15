@@ -113,7 +113,9 @@ img{ max-width:100%; height:auto; }
 .card-body p{ font-size:.95rem; margin-bottom:1rem; }
 .tags{ display:flex; flex-wrap:wrap; gap:.35rem; margin-top:auto; margin-bottom:1rem; }
 .tag{ font-family:var(--mono); font-size:.72rem; border:2px solid var(--ink); padding:.05rem .45rem; }
-.card-link{ font-family:var(--mono); font-size:.85rem; font-weight:600; text-decoration:none; border-bottom:3px solid var(--lemon); align-self:flex-start; margin-right:.8rem; }
+.card-actions{ display:flex; align-items:center; flex-wrap:wrap; gap:.7rem; }
+.card-link{ font-family:var(--mono); font-size:.85rem; font-weight:600; text-decoration:none; border-bottom:3px solid var(--lemon); align-self:flex-start; }
+.card-link-primary{ box-shadow:var(--shadow-sm); font-size:.82rem; padding:.45rem .7rem; }
 .card-link:hover{ border-bottom-color:var(--pink); }
 
 /* ---------- ฟอร์ม ---------- */
@@ -204,6 +206,119 @@ img{ max-width:100%; height:auto; }
 @media (prefers-reduced-motion:reduce){
   html{ scroll-behavior:auto; }
   /* ลด "การเคลื่อนที่" ตามเจตนาของ setting: ระยะเลื่อนเป็น 0 เหลือ fade สั้นๆ
-     ส่วนอนิเมชั่นที่วนซ้ำต่อเนื่อง (marquee, glitch, ดาว) ปิดใน themes.css */
+     ส่วนอนิเมชั่นที่วนซ้ำต่อเนื่อง (glitch, ดาว) ปิดใน themes.css */
   :root{ --slide:0px; }
+}
+
+/* ---------- หน้าสาธารณะ: พื้นเต็มจอ เนื้อหายังอ่านง่าย ---------- */
+.portfolio-page .wrap{ width:min(1200px,92vw); }
+.portfolio-page section[id]{ scroll-margin-top:7rem; }
+.portfolio-page .hero{ padding:clamp(3.5rem,7vw,7rem) 0; }
+.hero-grid > *{ min-width:0; }
+.hero h1{ overflow-wrap:anywhere; }
+.portfolio-page .hero-grid{ gap:clamp(2rem,5vw,5rem); }
+
+/* แถบสำรวจ: เลื่อนด้วยปุ่ม คีย์บอร์ด หรือสัมผัส */
+.discovery{ background:var(--ink); color:var(--paper); padding:1.8rem 0 1.2rem; border-block:var(--border); }
+.discovery-head{ display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-bottom:1.1rem; }
+.discovery-head h2{ font:700 1.45rem/1.3 var(--display); margin-bottom:.25rem; }
+.discovery-head p{ font-size:.88rem; color:#D1CBEA; }
+.discovery-controls{ display:flex; gap:.65rem; flex-shrink:0; }
+.discovery-controls .btn{ font-size:1.1rem; padding:.15rem .7rem; box-shadow:3px 3px 0 #858097; }
+.discovery-track{ display:flex; gap:16px; overflow-x:auto; overscroll-behavior-x:contain; scroll-snap-type:x proximity; scroll-padding-inline:4px; padding:4px 8px 14px 4px; margin-inline:-4px; scrollbar-width:thin; scrollbar-color:#9E92C5 var(--ink); }
+.discovery-item{ list-style:none; flex:0 0 clamp(240px,29vw,340px); scroll-snap-align:start; color:var(--ink); }
+.discovery-item a{ display:flex; flex-direction:column; height:100%; min-height:160px; padding:1.15rem 1.25rem; gap:.5rem; border:var(--border); background:var(--mint); text-decoration:none; transition:transform .15s ease; }
+.discovery-item:nth-child(2n) a{ background:var(--lemon); }
+.discovery-item:nth-child(3n) a{ background:#FFC8E5; }
+.discovery-item:nth-child(4n) a{ background:#C5DCFF; }
+.discovery-item a:hover{ transform:translateY(-3px); }
+.discovery-label{ display:flex; justify-content:space-between; gap:1rem; font:600 .72rem/1.5 var(--mono); }
+.discovery-label > span{ font-size:1.1rem; }
+.discovery-item strong{ font:700 1.3rem/1.4 var(--display); }
+.discovery-item a > span:last-child{ font-size:.85rem; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+
+/* บันทึกช่วงนี้ + ไลฟ์สไตล์ */
+.now-section{ background:#FFF5CD; border-block:var(--border); }
+.now-layout{ display:grid; grid-template-columns:.8fr 1.2fr; gap:3rem; align-items:center; }
+.now-layout h2{ margin-bottom:1rem; }
+.now-layout > div > p{ max-width:32ch; }
+.now-updated{ font-size:.8rem; margin-top:1.25rem; }
+.now-note{ padding:2rem; border:var(--border); box-shadow:var(--shadow); background:var(--white); }
+#now-text{ white-space:pre-line; overflow-wrap:anywhere; line-height:1.9; }
+.lifestyle-heading{ display:flex; align-items:end; justify-content:space-between; gap:1.5rem; margin-bottom:2rem; }
+.lifestyle-heading h2{ max-width:19ch; margin-bottom:0; }
+.lifestyle-heading > p{ max-width:28ch; }
+.lifestyle-grid{ display:grid; grid-template-columns:1.15fr 1fr 1fr; gap:1.5rem; align-items:stretch; }
+.life-card{ padding:1.5rem; border:var(--border); box-shadow:var(--shadow); min-width:0; background:var(--white); }
+.life-card h3{ font:700 1.55rem/1.4 var(--display); margin-bottom:1rem; }
+.life-card p{ white-space:pre-line; overflow-wrap:anywhere; }
+.life-personality{ display:flex; flex-direction:column; justify-content:center; }
+.personality-tags{ display:flex; flex-wrap:wrap; gap:.5rem; margin-top:1.5rem; }
+.personality-tags:empty{ display:none; }
+.personality-tags span{ font-size:.8rem; padding:.2rem .65rem; border:2px solid var(--ink); border-radius:99px; background:#EAE4FF; }
+.life-music{ background:#FFC8E5; }
+.music-record{ width:100px; height:100px; margin-bottom:1.5rem; border-radius:50%; background:repeating-radial-gradient(circle at center,#28223B 0 2px,var(--ink) 3px 6px); display:grid; place-items:center; }
+.music-record span{ width:34px; height:34px; border:10px solid var(--mint); border-radius:50%; background:var(--ink); }
+.life-link{ display:inline-block; font-weight:600; text-underline-offset:5px; margin-top:1.25rem; }
+.life-sports{ padding:0; background:#D4F7E8; }
+.life-sports img{ width:100%; aspect-ratio:3/2; object-fit:cover; display:block; border-bottom:var(--border); }
+.life-sports-body{ padding:1.5rem; }
+.lifestyle-grid:has(> .life-card.hidden){ grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr)); }
+
+/* เรื่องเบื้องหลังผลงาน */
+.card-top{ position:relative; overflow:hidden; }
+.project-cover{ display:block; width:100%; height:100%; object-fit:cover; }
+.card-top:has(.project-cover:not(.hidden)){ padding:0; }
+.card-top:has(.project-cover:not(.hidden)) > span{ display:none; }
+.featured-label{ display:inline-block; align-self:flex-start; margin-bottom:.7rem; padding:.15rem .55rem; border:1px solid currentColor; font-size:.75rem; color:#7CFCE0; }
+.project-story{ margin:.1rem 0 1.4rem; border-block:1px solid #49616C; }
+.project-story summary{ cursor:pointer; padding:.7rem 0; font-size:.9rem; font-weight:600; display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+.project-story summary span{ font-size:1.25rem; }
+.project-story[open] summary span{ transform:rotate(45deg); }
+.project-story dl > div{ margin:.6rem 0 1rem; }
+.project-story dt{ color:#7CFCE0; font-weight:600; font-size:.8rem; margin-bottom:.25rem; }
+.project-story dd,.project-description{ font-size:.9rem; white-space:pre-line; overflow-wrap:anywhere; }
+.card-body{ min-width:0; }
+.card-body h3,.card-body > p{ overflow-wrap:anywhere; }
+.proj-grid .card.is-featured:first-child{ grid-column:1/-1; display:grid; grid-template-columns:.85fr 1.15fr; }
+.card.is-featured:first-child .card-top{ border-bottom:0; border-right:var(--border); min-height:280px; display:grid; place-items:center; font-size:4rem; }
+.card.is-featured:first-child .card-body{ padding:1.75rem; }
+.card.is-featured:first-child h3{ font-size:1.8rem; }
+
+/* ช่องเพิ่มเติมใช้การบันทึกโปรไฟล์เดิม */
+.profile-extra{ min-width:0; border:2px solid var(--ink); padding:1.2rem; margin:1.5rem 0; }
+.profile-extra legend{ font-family:var(--display); font-weight:700; padding:0 .5rem; }
+.editor-note{ margin-bottom:1rem; font-size:.85rem; }
+.translation-fields{ margin-bottom:1.1rem; }
+.translation-fields summary{ cursor:pointer; font-size:.85rem; font-weight:600; margin-bottom:.75rem; }
+.project-fields textarea{ min-height:90px; }
+.admin-layout > main{ min-width:0; }
+
+@media (max-width:820px){
+  .portfolio-page .nav .wrap{ gap:.6rem; }
+  .portfolio-page .nav-links{ justify-content:flex-end; gap:.15rem; }
+  .portfolio-page .hero{ padding:3.5rem 0; }
+  .now-layout{ grid-template-columns:1fr; gap:1.5rem; }
+  .lifestyle-heading{ display:block; }
+  .lifestyle-heading > p{ margin-top:1rem; max-width:none; }
+  .lifestyle-grid{ grid-template-columns:1fr; }
+  .life-music{ display:grid; grid-template-columns:100px 1fr; gap:0 1.5rem; align-items:start; }
+  .music-record{ grid-row:1/4; margin:0; }
+  .life-music h3{ margin-bottom:.5rem; }
+  .life-sports img{ max-height:300px; }
+  .proj-grid .card.is-featured:first-child{ display:flex; }
+  .card.is-featured:first-child .card-top{ border-right:0; border-bottom:var(--border); min-height:180px; }
+  .card.is-featured:first-child .card-body{ padding:1.2rem; }
+}
+@media (max-width:480px){
+  .portfolio-page .nav .wrap{ align-items:flex-start; }
+  .portfolio-page .nav-logo{ font-size:.8rem; margin-top:.25rem; white-space:nowrap; }
+  .portfolio-page .nav-links{ max-width:65%; }
+  .discovery-head{ align-items:flex-end; }
+  .discovery-head h2{ font-size:1.25rem; }
+  .discovery-head p{ font-size:.78rem; }
+  .now-note{ padding:1.25rem; }
+  .life-music{ display:block; }
+  .music-record{ margin-bottom:1.25rem; }
+  .profile-extra{ padding:1rem; }
 }
