@@ -32,15 +32,15 @@
   --hero-ink:#FFF8F2;
   --hero-accent:#FFDC96;
   background-color:#25143F;
-  background-image:linear-gradient(90deg,#25143F4D,transparent 60%),url('../images/hero-illustrated-v1.webp');
+  background-image:linear-gradient(90deg,#25143F4D,transparent 60%),url('../images/hero-clouds-v2.webp');
   background-size:cover;
   background-position:right center;
   color:var(--hero-ink);
   overflow:hidden; position:relative;
 }
 .portfolio-page .theme-illustrated.hero{ min-height:clamp(600px,42vw,820px); padding:clamp(10rem,13vw,14rem) 0 4.5rem; }
-.theme-illustrated .hero-grid{ display:block; position:relative; }
-.theme-illustrated .hero-grid > div:first-child{ width:46%; max-width:34rem; }
+.theme-illustrated .hero-grid{ position:relative; }
+.theme-illustrated .hero-grid > div:first-child{ max-width:34rem; }
 .theme-illustrated .hero-grid > div{ animation:none; }
 .theme-illustrated h1{ color:var(--hero-ink); font-size:clamp(2.75rem,4.7vw,4.6rem); font-weight:700; line-height:1.12; }
 .theme-illustrated h1 em{ background:none; color:var(--hero-accent); }
@@ -49,8 +49,6 @@
   box-shadow:0 4px 0 #25143F80; padding:.3rem .85rem; font-family:var(--body); font-size:.85rem;
 }
 .theme-illustrated .hero-role{ color:#F4DDEF; margin-top:1rem; }
-.hero-location{ display:none; }
-.theme-illustrated .hero-location:not(:empty){ display:block; color:#F4DDEF; font-size:.88rem; margin-top:-1.2rem; margin-bottom:1.6rem; }
 .theme-illustrated .hero-cta .btn{
   padding:.7rem 1.4rem; border:2px solid #F8E2F1; border-radius:12px;
   background:#39214FE6; color:var(--hero-ink); box-shadow:0 5px 0 #180C2B;
@@ -61,16 +59,17 @@
 .theme-illustrated .hero-cta .btn:active{ transform:translateY(3px); box-shadow:0 2px 0 #180C2B; }
 .theme-illustrated .hero-cta .btn:focus-visible{ outline:3px solid var(--hero-accent); outline-offset:5px; }
 .theme-illustrated .hero-cta .btn::after{ content:none; }
-.theme-illustrated .term{ display:none; }
 @media (max-width:900px){
-  .portfolio-page .theme-illustrated.hero{ min-height:0; padding:3rem 0 24rem; }
+  .portfolio-page .theme-illustrated.hero{ min-height:0; padding:3rem 0 4rem; }
   .theme-illustrated{
-    background-image:linear-gradient(180deg,#25143F 0%,#25143F calc(100% - 420px),#25143F00 calc(100% - 335px)),url('../images/hero-illustrated-v1.webp');
+    background-image:linear-gradient(180deg,#25143F 0%,#25143F calc(100% - 420px),#25143F00 calc(100% - 335px)),url('../images/hero-clouds-v2.webp');
     background-size:100% 100%,auto 420px;
     background-position:center,76% bottom;
     background-repeat:no-repeat;
   }
+  .theme-illustrated .hero-grid{ grid-template-columns:1fr; }
   .theme-illustrated .hero-grid > div:first-child{ width:100%; max-width:40rem; }
+  .theme-illustrated .term{ transform:none; }
 }
 
 /* ---------- Hand-Drawn (about) ---------- */
