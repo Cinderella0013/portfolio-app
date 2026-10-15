@@ -1,6 +1,6 @@
 /* ============================================================
    ธีมประจำ section — แต่ละส่วนของหน้ามีสไตล์ของตัวเอง
-   hero = Y2K / Pastel Paper · about = Hand-Drawn · work = Retro 70s · projects = Cyberpunk
+   hero = Y2K / Illustrated Clouds · about = Hand-Drawn · work = Retro 70s · projects = Cyberpunk
    พื้นหลังอยู่บน section เต็มจอ ส่วนเนื้อหาอยู่ใน .wrap
    ============================================================ */
 
@@ -27,46 +27,50 @@
 }
 @keyframes sparkle-fall{ to{ opacity:0; transform:translateY(26px) rotate(180deg) scale(.3); } }
 
-/* ---------- Pastel Paper (hero ใหม่) ---------- */
-.theme-pastel{
-  --hero-ink:#382D49;
-  --hero-accent:#70508F;
-  background:linear-gradient(115deg,#FFF0F6 0%,#F5EAF8 48%,#E9DFF8 100%);
+/* ---------- Illustrated Clouds (hero ใหม่) ---------- */
+.theme-illustrated{
+  --hero-ink:#FFF8F2;
+  --hero-accent:#FFDC96;
+  background-color:#25143F;
+  background-image:linear-gradient(90deg,#25143F4D,transparent 60%),url('../images/hero-illustrated-v1.webp');
+  background-size:cover;
+  background-position:right center;
   color:var(--hero-ink);
-  overflow:hidden;
-  position:relative;
+  overflow:hidden; position:relative;
 }
-.theme-pastel h1{ color:var(--hero-ink); font-weight:600; line-height:1.16; }
-.theme-pastel h1 em{ background:none; color:var(--hero-accent); }
-.theme-pastel .hero-hi{
-  background:#FFFAFD; border:1px solid #D9C9E1; border-radius:99px;
-  box-shadow:0 3px 0 #E8D9EB; padding:.35rem .9rem; font-family:var(--body); font-size:.85rem;
+.portfolio-page .theme-illustrated.hero{ min-height:clamp(600px,42vw,820px); padding:clamp(10rem,13vw,14rem) 0 4.5rem; }
+.theme-illustrated .hero-grid{ display:block; position:relative; }
+.theme-illustrated .hero-grid > div:first-child{ width:46%; max-width:34rem; }
+.theme-illustrated .hero-grid > div{ animation:none; }
+.theme-illustrated h1{ color:var(--hero-ink); font-size:clamp(2.75rem,4.7vw,4.6rem); font-weight:700; line-height:1.12; }
+.theme-illustrated h1 em{ background:none; color:var(--hero-accent); }
+.theme-illustrated .hero-hi{
+  background:#F6D8EB; color:#382146; border:1px solid #FFEEF7; border-radius:99px;
+  box-shadow:0 4px 0 #25143F80; padding:.3rem .85rem; font-family:var(--body); font-size:.85rem;
 }
-.theme-pastel .hero-role{ margin-top:1.15rem; }
-.theme-pastel .hero-cta .btn{
-  padding:.75rem 1.4rem; border:1px solid #D4C3DF; border-radius:12px;
-  background:#FFFAFD; color:var(--hero-ink); box-shadow:0 4px 0 #E3D5EB;
-  transition:transform .15s ease-out, box-shadow .15s ease-out;
+.theme-illustrated .hero-role{ color:#F4DDEF; margin-top:1rem; }
+.hero-location{ display:none; }
+.theme-illustrated .hero-location:not(:empty){ display:block; color:#F4DDEF; font-size:.88rem; margin-top:-1.2rem; margin-bottom:1.6rem; }
+.theme-illustrated .hero-cta .btn{
+  padding:.7rem 1.4rem; border:2px solid #F8E2F1; border-radius:12px;
+  background:#39214FE6; color:var(--hero-ink); box-shadow:0 5px 0 #180C2B;
+  transition:transform .15s ease-out,box-shadow .15s ease-out;
 }
-.theme-pastel .hero-cta .btn-primary{ background:var(--hero-accent); color:#fff; border-color:var(--hero-accent); box-shadow:0 4px 0 #CDB8DF; }
-.theme-pastel .hero-cta .btn:hover{ transform:translateY(-2px); box-shadow:0 6px 0 #DCCBE8; }
-.theme-pastel .hero-cta .btn:active{ transform:translateY(2px); box-shadow:0 1px 0 #DCCBE8; }
-.theme-pastel .hero-cta .btn:focus-visible{ outline:3px solid var(--hero-accent); outline-offset:4px; }
-.theme-pastel .hero-cta .btn::after{ content:none; }
-.theme-pastel .hero-grid > div{ animation:none; }
-.theme-pastel .term{
-  border:1px solid #D6C7E3; border-radius:16px; background:#FFFCFF; color:var(--hero-ink);
-  transform:perspective(1100px) rotateX(7deg) rotateY(-12deg) rotateZ(-2deg);
-  box-shadow:7px 9px 0 #E4D5F0, 14px 18px 0 #D9C6E8, 22px 32px 48px #72538E26;
-}
-.theme-pastel .term-bar{ padding:.8rem 1.1rem; border-bottom:1px solid #E7DDED; border-radius:15px 15px 0 0; background:#F6F0FA; }
-.theme-pastel .term-title{ color:#776182; opacity:1; }
-.theme-pastel .term-body{ padding:1.5rem; min-height:220px; }
-.theme-pastel .term-body p{ margin-bottom:.55rem; }
-.theme-pastel .term-prompt,.theme-pastel .term-key{ color:var(--hero-accent); }
-.theme-pastel .caret{ background:var(--hero-accent); }
-@media (max-width:820px){
-  .theme-pastel .term{ transform:none; margin:0 14px 18px 0; box-shadow:5px 6px 0 #E4D5F0, 10px 12px 0 #D9C6E8, 14px 20px 32px #72538E1A; }
+.theme-illustrated .hero-cta .btn-primary{ background:var(--hero-accent); color:#30183F; border-color:var(--hero-accent); }
+.theme-illustrated .hero-cta .btn:hover{ transform:translateY(-2px); box-shadow:0 7px 0 #180C2B; }
+.theme-illustrated .hero-cta .btn:active{ transform:translateY(3px); box-shadow:0 2px 0 #180C2B; }
+.theme-illustrated .hero-cta .btn:focus-visible{ outline:3px solid var(--hero-accent); outline-offset:5px; }
+.theme-illustrated .hero-cta .btn::after{ content:none; }
+.theme-illustrated .term{ display:none; }
+@media (max-width:900px){
+  .portfolio-page .theme-illustrated.hero{ min-height:0; padding:3rem 0 24rem; }
+  .theme-illustrated{
+    background-image:linear-gradient(180deg,#25143F 0%,#25143F calc(100% - 420px),#25143F00 calc(100% - 335px)),url('../images/hero-illustrated-v1.webp');
+    background-size:100% 100%,auto 420px;
+    background-position:center,76% bottom;
+    background-repeat:no-repeat;
+  }
+  .theme-illustrated .hero-grid > div:first-child{ width:100%; max-width:40rem; }
 }
 
 /* ---------- Hand-Drawn (about) ---------- */

@@ -12,6 +12,7 @@ function renderProfile(p) {
   document.title = `${p.fullName} — Portfolio`;
   $('#hero-name').textContent = p.fullName;
   $('#hero-headline').textContent = t(p.headline, p.headlineEn || p.headline);
+  $('#hero-location').textContent = p.location ? `${t('อยู่ที่ ', 'Based in ')}${p.location}` : '';
   $('#nav-logo').textContent = '~/' + p.fullName.split(/\s+/)[0].toLowerCase();
   $('#footer-name').textContent = `© ${new Date().getFullYear()} ${p.fullName}`;
   renderPersonalContent(p);

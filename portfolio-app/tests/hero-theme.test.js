@@ -5,7 +5,7 @@ import { runInNewContext } from 'node:vm';
 
 test('each page load chooses one of the two hero themes at the halfway boundary', () => {
   const source = readFileSync(new URL('../frontend/assets/js/hero-theme.js', import.meta.url), 'utf8');
-  for (const [random, expected] of [[0, 'theme-y2k'], [0.499999, 'theme-y2k'], [0.5, 'theme-pastel'], [0.999999, 'theme-pastel']]) {
+  for (const [random, expected] of [[0, 'theme-y2k'], [0.499999, 'theme-y2k'], [0.5, 'theme-illustrated'], [0.999999, 'theme-illustrated']]) {
     let selected;
     runInNewContext(source, {
       Math: { random: () => random },

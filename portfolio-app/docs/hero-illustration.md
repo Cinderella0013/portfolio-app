@@ -1,0 +1,13 @@
+# Illustrated Clouds hero asset
+
+Generated with the built-in ImageGen tool. The reference informed the illustration's colors, clouds, brush lettering, and composition; the character is original and is not a portrait of the site owner.
+
+Production asset: `frontend/assets/images/hero-illustrated-v1.webp` (1942 × 809, about 106 KiB). Converted from the generated PNG to WebP at quality 88. The website's name, introduction, and buttons remain live HTML.
+
+## Final generation prompt
+
+Create one original, finished illustrated website hero banner asset for a developer's personal portfolio. Wide panoramic landscape composition, approximately 2.4:1 aspect ratio, high resolution, crisp clean professional 2D animation / editorial vector illustration aesthetic. Visual language: large layered scalloped clouds and organic paper-cut silhouettes, deep aubergine and dark indigo on the LEFT transitioning through lavender and dusty pink to coral orange and warm buttery yellow clouds on the RIGHT. Limited flat cel shading, confident clean dark outlines on the character, a few small four-point white stars, sparse tiny speckles, two thin diagonal shooting-star streaks. Rich color blocking, no photorealism, no 3D render, no glass UI.
+
+Composition is essential for implementation: the leftmost 44 percent, especially the middle and lower left, must remain a quiet dark purple cloud field with VERY little detail, so real white HTML headings and buttons can be overlaid there. On the right half place an original friendly androgynous young Southeast Asian software developer cartoon character, short slightly tousled dark burgundy hair, large rectangular glasses with softly reflected lenses, dark casual overshirt over a cream t-shirt, working on a lavender laptop, half-body pose. Character is centered around x=76% of canvas width, face around y=42%, laptop around y=80%, entire head clearly visible and character/laptop grounded at the bottom edge. Not a portrait of any real person and do not copy a known character. The character should have personality and warmth and be the main visual focal point.
+
+Across the upper third, large expressive white brush-script lettering reading exactly 'Portfolio', integrated BEHIND the character's head, spanning from about x=18% to x=94%. Keep that lettering mostly in the upper 26% of the canvas and do not place any lettering in the left center/lower text-safe area. No year, no logos, no watermark, no other text, no interface controls or terminal windows, no screenshot framing. The result is a production background illustration asset, not an entire website mockup.
